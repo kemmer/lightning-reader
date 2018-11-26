@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+      "name": "root",
+			"path": "."
+		},
+    {
+      "name": "Source",
+      "path": "src"
+    },
+    {
+      "name": "Packages/TimberLog",
+      "path": "packages/timber-log"
+    },
+	]
+}
