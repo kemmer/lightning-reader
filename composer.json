@@ -1,0 +1,27 @@
+{
+    "name": "kemmer/lightning-reader",
+    "description": "A reader able to read from a log file, store in database and query information about it.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Cristiano Kemmer",
+            "email": "criskemmer@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/timber-log"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "kemmer/timber-log": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Testing\\": "src/Testing"
+        }
+    }
+}

@@ -1,3 +1,9 @@
 .vscode
 *.sublime-workspace
 *.sublime-project
+
+vendor/
+
+# will always use latest versions as defined in composer.json
+composer.lock
+
