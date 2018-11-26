@@ -3,13 +3,16 @@ namespace TimberLog\Test;
 
 require __DIR__."/../../../vendor/autoload.php";
 use TimberLog\Target\ScreenLogger;
-use TimberLog\Logger\{LoggerInterface, Log};
+use TimberLog\Logger\LoggerInterface;
+use TimberLog\Log\{Log, ReflectionLog};
 
 
 /**
  * RunAndWatch
  *
  * Class intended to be executed and results observed
+ * Logs are passed within array then all executed, accordingly
+ * with desired output type
  */
 class RunAndWatch
 {
@@ -44,24 +47,41 @@ class RunAndWatch
   }
 }
 
+class SampleClass
+{
+  public function methodA()
+  {
+    echo "aaa";
+  }
+
+  public function methodB()
+  {
+    echo "bbb";
+  }
+}
+
 function main()
 {
   // An example class/method
-  $r_class = new \ReflectionClass(new class {
-      public function SampleMethod()
-      {
-          $aaa = 1;
-          $bbb = 2;
-      }
-  });
-  $r_method = $r_class->getMethod("SampleMethod");
+  // $r_class = new \ReflectionClass(new class {
+  //     public function SampleMethod()
+  //     {
+  //         $aaa = 1;
+  //         $bbb = 2;
+  //     }
+  // });
+  // $r_method = $r_class->getMethod("SampleMethod");
+  $r_class = new \ReflectionClass(new SampleClass);
+  $r_method = $r_class->getMethod("methodB");
 
   // Logs
   $logs = [];
-  $logs [] =  new Log($r_method, "This is a test");
-  $logs [] = new Log($r_method, "This is another test");
-  $logs [] = new Log($r_method, "This is whatever you wanna log");
-  $logs [] = new Log($r_method, "This is... hold on... enough!");
+  $logs [] = new Log("This is a test");
+  $logs [] = new Log("This is another test");
+  $logs [] = new Log("This is whatever you wanna log");
+  $logs [] = new Log("This is... hold on... enough!");
+  $logs [] = new ReflectionLog("Example of log using method details from reflection", $r_method);
+  $logs [] = new ReflectionLog("Another one, same method", $r_method);
 
   // Testing screen logging
   $chosen = new ScreenLogger;

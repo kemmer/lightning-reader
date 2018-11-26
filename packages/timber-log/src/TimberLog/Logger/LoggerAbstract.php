@@ -2,7 +2,7 @@
 
 namespace TimberLog\Logger;
 
-class LoggerAbstract
+abstract class LoggerAbstract
 {
     const ERROR_STR   = "[ERROR]";
     const WARNING_STR = "[WARNING]";

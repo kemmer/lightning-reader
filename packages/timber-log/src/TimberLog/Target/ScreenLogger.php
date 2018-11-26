@@ -2,13 +2,19 @@
 
 namespace TimberLog\Target;
 use TimberLog\Logger\{LoggerAbstract, LoggerInterface};
+use TimberLog\Log\ReflectionLog;
 
 
 class ScreenLogger extends LoggerAbstract implements LoggerInterface
 {
     private function screen($type, $log)
     {
-        printf("%s %s --> %s\n", $type, $log->message(), $log->context());
+        printf("%s %s", $type, $log->message());
+
+        if($log instanceof ReflectionLog)
+            printf(" --> %s", $log->context());
+
+        printf("\n");
     }
 
     public function error($log)
