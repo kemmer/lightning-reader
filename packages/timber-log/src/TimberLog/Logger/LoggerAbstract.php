@@ -2,6 +2,10 @@
 
 namespace TimberLog\Logger;
 
+
+/**
+ * LoggerAbstract
+ */
 abstract class LoggerAbstract
 {
     const ERROR_STR   = "[ERROR]";

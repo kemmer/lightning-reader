@@ -2,6 +2,12 @@
 
 namespace TimberLog\Log;
 
+/**
+ * ReflectionLog
+ *
+ * A specialized unit in showing log contexts based
+ * on reflection
+ */
 class ReflectionLog extends Log
 {
     private $r_method;

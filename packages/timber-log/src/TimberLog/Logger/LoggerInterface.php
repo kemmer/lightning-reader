@@ -2,6 +2,9 @@
 
 namespace TimberLog\Logger;
 
+/**
+ * LoggerInterface
+ */
 interface LoggerInterface
 {
     public function error($message);

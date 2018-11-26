@@ -4,10 +4,14 @@ namespace TimberLog\Target;
 use TimberLog\Logger\{LoggerAbstract, LoggerInterface};
 use TimberLog\Log\ReflectionLog;
 
-
-class ScreenLogger extends LoggerAbstract implements LoggerInterface
+/**
+ * ConsoleLogger
+ *
+ * Responsible for producing log output to the console
+ */
+class ConsoleLogger extends LoggerAbstract implements LoggerInterface
 {
-    private function screen($type, $log)
+    private function console($type, $log)
     {
         printf("%s %s", $type, $log->message());
 
@@ -19,16 +23,16 @@ class ScreenLogger extends LoggerAbstract implements LoggerInterface
 
     public function error($log)
     {
-        self::screen(self::ERROR_STR, $log);
+        self::console(self::ERROR_STR, $log);
     }
 
     public function warning($log)
     {
-        self::screen(self::WARNING_STR, $log);
+        self::console(self::WARNING_STR, $log);
     }
 
     public function info($log)
     {
-        self::screen(self::INFO_STR, $log);
+        self::console(self::INFO_STR, $log);
     }
 }

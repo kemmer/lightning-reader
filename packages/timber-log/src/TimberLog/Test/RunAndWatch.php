@@ -2,7 +2,7 @@
 namespace TimberLog\Test;
 
 require __DIR__."/../../../vendor/autoload.php";
-use TimberLog\Target\ScreenLogger;
+use TimberLog\Target\ConsoleLogger;
 use TimberLog\Logger\LoggerInterface;
 use TimberLog\Log\{Log, ReflectionLog};
 
@@ -84,7 +84,7 @@ function main()
   $logs [] = new ReflectionLog("Another one, same method", $r_method);
 
   // Testing screen logging
-  $chosen = new ScreenLogger;
+  $chosen = new ConsoleLogger;
   $rnw = new RunAndWatch($chosen, $logs);
   $rnw->test_error();
   $rnw->test_warning();

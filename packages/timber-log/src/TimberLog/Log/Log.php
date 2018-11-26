@@ -2,6 +2,11 @@
 
 namespace TimberLog\Log;
 
+/**
+ * Log
+ *
+ * A basic unit of a log
+ */
 class Log
 {
     private $message;
