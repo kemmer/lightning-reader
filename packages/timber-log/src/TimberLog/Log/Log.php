@@ -5,19 +5,19 @@ namespace TimberLog\Log;
 /**
  * Log
  *
- * A basic unit of a log
+ * What a log should minimally do
  */
-class Log
+abstract class Log implements LogInterface
 {
-    private $message;
+    protected $message;
 
     public function __construct(string $message)
     {
         $this->message = $message;
     }
 
-    public function message()
+    public function message() : string
     {
-        return sprintf("%s", $this->message);
+        return $this->message;
     }
 }

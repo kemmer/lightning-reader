@@ -2,12 +2,14 @@
 
 namespace TimberLog\Logger;
 
+use TimberLog\Log\LogInterface;
+
 /**
  * LoggerInterface
  */
 interface LoggerInterface
 {
-    public function error($message);
-    public function warning($message);
-    public function info($message);
+    public function error(LogInterface $log);
+    public function warning(LogInterface $log);
+    public function info(LogInterface $log);
 }

@@ -4,7 +4,8 @@ namespace TimberLog\Test;
 require __DIR__."/../../../vendor/autoload.php";
 use TimberLog\Target\ConsoleLogger;
 use TimberLog\Logger\LoggerInterface;
-use TimberLog\Log\{Log, ReflectionLog};
+use TimberLog\Log\{PlainLog, ReflectionLog};
+use ReflectionClass;
 
 
 /**
@@ -63,7 +64,7 @@ class SampleClass
 function main()
 {
   // An example class/method
-  // $r_class = new \ReflectionClass(new class {
+  // $r_class = new ReflectionClass(new class {
   //     public function SampleMethod()
   //     {
   //         $aaa = 1;
@@ -71,15 +72,15 @@ function main()
   //     }
   // });
   // $r_method = $r_class->getMethod("SampleMethod");
-  $r_class = new \ReflectionClass(new SampleClass);
+  $r_class = new ReflectionClass(new SampleClass);
   $r_method = $r_class->getMethod("methodB");
 
   // Logs
   $logs = [];
-  $logs [] = new Log("This is a test");
-  $logs [] = new Log("This is another test");
-  $logs [] = new Log("This is whatever you wanna log");
-  $logs [] = new Log("This is... hold on... enough!");
+  $logs [] = new PlainLog("This is a test");
+  $logs [] = new PlainLog("This is another test");
+  $logs [] = new PlainLog("This is whatever you wanna log");
+  $logs [] = new PlainLog("This is... hold on... enough!");
   $logs [] = new ReflectionLog("Example of log using method details from reflection", $r_method);
   $logs [] = new ReflectionLog("Another one, same method", $r_method);
 

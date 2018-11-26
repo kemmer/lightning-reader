@@ -1,37 +1,33 @@
 <?php
 
 namespace TimberLog\Target;
-use TimberLog\Logger\{LoggerAbstract, LoggerInterface};
-use TimberLog\Log\ReflectionLog;
+
+use TimberLog\Logger\{Logger, LoggerInterface};
+use TimberLog\Log\LogInterface;
 
 /**
  * ConsoleLogger
  *
  * Responsible for producing log output to the console
  */
-class ConsoleLogger extends LoggerAbstract implements LoggerInterface
+class ConsoleLogger extends Logger
 {
-    private function console($type, $log)
+    private function console($level, LogInterface $log)
     {
-        printf("%s %s", $type, $log->message());
-
-        if($log instanceof ReflectionLog)
-            printf(" --> %s", $log->context());
-
-        printf("\n");
+        printf("%s\n", $this->release($level, $log));
     }
 
-    public function error($log)
+    public function error(LogInterface $log)
     {
         self::console(self::ERROR_STR, $log);
     }
 
-    public function warning($log)
+    public function warning(LogInterface $log)
     {
         self::console(self::WARNING_STR, $log);
     }
 
-    public function info($log)
+    public function info(LogInterface $log)
     {
         self::console(self::INFO_STR, $log);
     }
