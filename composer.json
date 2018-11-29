@@ -13,11 +13,16 @@
         {
             "type": "path",
             "url": "packages/timber-log"
+        },
+        {
+            "type": "path",
+            "url": "packages/unity-test"
         }
     ],
     "require": {
         "php": "^7.1",
-        "kemmer/timber-log": "*"
+        "kemmer/timber-log": "*",
+        "kemmer/unity-test": "*"
     },
     "autoload": {
         "psr-4": {
