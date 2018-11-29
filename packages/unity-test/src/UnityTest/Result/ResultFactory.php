@@ -6,15 +6,15 @@ use UnityTest\Test\Result;
 use ReflectionMethod;
 
 
-class ResultHandler
+class ResultFactory
 {
-    public function createSuccess(ReflectionMethod $rm) : Result
+    public static function createSuccess(ReflectionMethod $rm) : Result
     {
         $result = new Result(true, $rm);
         return $result;
     }
 
-    public function createFailure(ReflectionMethod $rm, $e) : Result
+    public static function createFailure(ReflectionMethod $rm, $e) : Result
     {
         $result = new Result(false, $rm, $e);
         return $result;

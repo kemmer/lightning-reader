@@ -5,7 +5,7 @@ namespace UnityTest;
 use ReflectionClass, ReflectionMethod;
 use ErrorException, Exception;
 use UnityTest\Assert\{AssertTrait, AssertException};
-use UnityTest\Result\ResultHandler;
+use UnityTest\Result\ResultFactory;
 
 // error_reporting(0);
 
@@ -23,12 +23,12 @@ abstract class TestCase
     /* Provides result handling */
     private $resultsHandler;
 
-    public function __construct(ResultHandler $handler)
+    public function __construct(ResultFactory $handler)
     {
         $this->results = [];
         $this->resultsHandler = $handler;
 
-        set_error_handler([ResultHandler::class, 'convertErrorToException']);
+        set_error_handler([ResultFactory::class, 'convertErrorToException']);
     }
 
     protected function configure()
@@ -72,9 +72,9 @@ abstract class TestCase
                 } finally {
                     $args = [$rMethod, $exceptionThrown];
                     if($status == true)
-                        $this->results [] = ResultHandler::createSuccess(...$args);
+                        $this->results [] = ResultFactory::createSuccess(...$args);
                     else
-                        $this->results [] = ResultHandler::createFailure(...$args);
+                        $this->results [] = ResultFactory::createFailure(...$args);
                 }
 
                 /**
