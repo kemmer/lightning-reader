@@ -13,5 +13,9 @@
       "name": "Packages/TimberLog",
       "path": "packages/timber-log"
     },
+    {
+      "name": "Packages/UnityTest",
+      "path": "packages/unity-test"
+    },
 	]
 }
