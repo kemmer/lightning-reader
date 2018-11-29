@@ -17,21 +17,11 @@ class Result
     /* Exception generated, in case of failures only */
     private $exception;
 
-    /* This flag will tell output() to provide a more expressive and detailed result output */
-    private bool $verbose;
-
     public function __construct(bool $s, ReflectionMethod $rm, $e = null)
     {
-        $this->verbose = false;
-
         $this->status = $s;
         $this->rMethod = $rm;
         $this->exception = $e;
-    }
-
-    public function setVerbose(bool $v)
-    {
-        $this->verbose = $v;
     }
 
     private function outputQuiet() : string
@@ -54,9 +44,9 @@ class Result
         // ...
     }
 
-    public function output() : string
+    public function output(bool $verbose = false) : string
     {
-        if(!$this->verbose)
+        if(!$verbose)
             return $this->outputQuiet();
         else
             return $this->outputVerbose();

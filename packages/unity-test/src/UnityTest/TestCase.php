@@ -17,6 +17,9 @@ abstract class TestCase
     /* Store testing results */
     private array $results;
 
+    /* This flag will tell results to provide a more expressive and detailed result output */
+    private bool $verbose;
+
     /* Provides result handling */
     private $resultsHandler;
 
