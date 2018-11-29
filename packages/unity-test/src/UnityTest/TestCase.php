@@ -21,12 +21,16 @@ abstract class TestCase
     private bool $verbose;
 
     /* Provides result handling */
+    /**
+     * TODO: Implement a result handler to remove direct ResultFactory dependency
+     * and provide advanced configuration and better abstraction
+     */
     private $resultsHandler;
 
-    public function __construct(ResultFactory $handler)
+    public function __construct()
     {
         $this->results = [];
-        $this->resultsHandler = $handler;
+        // $this->resultsHandler = $handler;
 
         set_error_handler([ResultFactory::class, 'convertErrorToException']);
     }
