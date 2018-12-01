@@ -4,8 +4,12 @@ namespace UnityTest;
 
 use ReflectionClass, ReflectionMethod;
 use ErrorException, Exception;
+
 use UnityTest\Assert\{AssertTrait, AssertException};
 use UnityTest\Result\ResultFactory;
+
+use TimberLog\Log\LogFactory;
+use TimberLog\Logger\LoggerInterface;
 
 // error_reporting(0);
 
@@ -20,17 +24,13 @@ abstract class TestCase
     /* This flag will tell results to provide a more expressive and detailed result output */
     private $verbose;
 
-    /* Provides result handling */
-    /**
-     * TODO: Implement a result handler to remove direct ResultFactory dependency
-     * and provide advanced configuration and better abstraction
-     */
-    private $resultsHandler;
+    /* Provides result log handling */
+    private $logHandler;
 
-    public function __construct()
+    public function __construct(LoggerInterface $handler)
     {
         $this->results = [];
-        // $this->resultsHandler = $handler;
+        $this->logHandler = $handler;
 
         set_error_handler([ResultFactory::class, 'convertErrorToException']);
     }
@@ -90,12 +90,17 @@ abstract class TestCase
             }
         }
 
+        $this->outputResults();
+    }
+
+    private function outputResults()
+    {
         // Providing the output of test results for the user
         foreach($this->results as $result) {
-            // TODO: Use TimberLog, for both providing
-            printf($result->output());
+            if($result->failed())
+                $this->logHandler->error(LogFactory::createPlain($result->output()));
+            else
+                $this->logHandler->info(LogFactory::createPlain($result->output()));
         }
-
-        printf("\n");
     }
 }

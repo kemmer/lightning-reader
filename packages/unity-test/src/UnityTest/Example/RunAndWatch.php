@@ -7,6 +7,9 @@ use UnityTest\TestCase;
 use UnityTest\Assert\AssertException;
 use UnityTest\Assert\AssertCode;
 
+use TimberLog\Target\ConsoleLogger;
+
+
 class TestingExample extends TestCase
 {
     protected function configure()
@@ -60,5 +63,6 @@ class TestingExample extends TestCase
     }
 }
 
-$te = new TestingExample;
+$choosen = new ConsoleLogger;
+$te = new TestingExample($choosen);
 $te->performTesting();

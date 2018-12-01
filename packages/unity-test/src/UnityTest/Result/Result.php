@@ -24,6 +24,11 @@ class Result
         $this->exception = $e;
     }
 
+    public function failed() : bool
+    {
+        return ! $this->status;
+    }
+
     private function outputQuiet() : string
     {
         $outputContent = "";
