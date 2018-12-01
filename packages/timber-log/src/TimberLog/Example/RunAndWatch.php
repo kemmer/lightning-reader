@@ -77,10 +77,10 @@ function main()
 
   // Logs
   $logs = [];
-  $logs [] = LogFactory::createPlain("This is a test");
-  $logs [] = LogFactory::createPlain("This is another test");
-  $logs [] = LogFactory::createPlain("This is whatever you wanna log");
-  $logs [] = LogFactory::createPlain("This is... hold on... enough!");
+  $logs [] = LogFactory::createSimple("This is a test");
+  $logs [] = LogFactory::createSimple("This is another test");
+  $logs [] = LogFactory::createSimple("This is whatever you wanna log");
+  $logs [] = LogFactory::createSimple("This is... hold on... enough!");
   $logs [] = LogFactory::createReflection("Example of log using method details from reflection", $r_method);
   $logs [] = LogFactory::createReflection("Another one, same method", $r_method);
 

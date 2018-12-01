@@ -2,15 +2,15 @@
 
 namespace TimberLog\Log;
 
-use TimberLog\Log\PlainLog;
+use TimberLog\Log\SimpleLog;
 use TimberLog\Log\ReflectionLog;
 
 
 class LogFactory
 {
-    public static function createPlain($message) : PlainLog
+    public static function createSimple($message) : SimpleLog
     {
-        $log = new PlainLog($message);
+        $log = new SimpleLog($message);
         return $log;
     }
 
