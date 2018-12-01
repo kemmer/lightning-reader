@@ -2,8 +2,9 @@
 
 namespace UnityTest\Result;
 
-use UnityTest\Test\Result;
+use UnityTest\Result\Result;
 use ReflectionMethod;
+use ErrorException;
 
 
 class ResultFactory

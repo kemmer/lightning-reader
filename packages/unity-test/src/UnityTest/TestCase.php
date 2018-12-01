@@ -15,10 +15,10 @@ abstract class TestCase
     use AssertTrait;
 
     /* Store testing results */
-    private array $results;
+    private $results;
 
     /* This flag will tell results to provide a more expressive and detailed result output */
-    private bool $verbose;
+    private $verbose;
 
     /* Provides result handling */
     /**
@@ -58,8 +58,8 @@ abstract class TestCase
                 $exceptionThrown = null;
 
                 try {
-                    $status = true;
                     $this->$testableMethodName();
+                    $status = true;
 
                 } catch(AssertException $e) {
                     // An assertion has failed. Report as assertion failure.
@@ -95,5 +95,7 @@ abstract class TestCase
             // TODO: Use TimberLog, for both providing
             printf($result->output());
         }
+
+        printf("\n");
     }
 }

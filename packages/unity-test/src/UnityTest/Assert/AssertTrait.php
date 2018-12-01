@@ -2,8 +2,8 @@
 
 namespace UnityTest\Assert;
 
-use AssertCode;
-use AssertException;
+use UnityTest\Assert\AssertCode;
+use UnityTest\Assert\AssertException;
 
 /**
  * AssertTrait
@@ -19,7 +19,7 @@ trait AssertTrait
     protected function assertTrue(bool $expression) : int
     {
         if($expression !== true)
-            throw AssertException(AsserCode::TRUE);
+            throw new AssertException(AssertCode::TRUE);
 
         return 0;
     }
@@ -27,7 +27,7 @@ trait AssertTrait
     protected function assertEquals($one, $two) : int
     {
         if($one != $two)
-            throw  AssertException(AssertCode::EQUALS);
+            throw new AssertException(AssertCode::EQUALS);
 
         return 0;
     }

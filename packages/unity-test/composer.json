@@ -12,7 +12,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "packages/timber-log"
+            "url": "../../packages/timber-log"
         }
     ],
     "require": {

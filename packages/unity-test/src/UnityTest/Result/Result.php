@@ -9,10 +9,10 @@ use UnityTest\Assert\AssertException;
 class Result
 {
     /* Whether the test result is success of failure */
-    private bool $status;
+    private $status;
 
     /* Reflected 'test_' method responsible for this result */
-    private ReflectionMethod $rMethod;
+    private $rMethod;
 
     /* Exception generated, in case of failures only */
     private $exception;
@@ -29,7 +29,7 @@ class Result
         $outputContent = "";
 
         /* This will simply output a minimal indication for a success, assert failure or error */
-        if($status == true)
+        if($this->status == true)
             $outputContent = '.';
         elseif($this->exception instanceof AssertException)
             $outputContent = 'F';

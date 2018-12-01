@@ -11,7 +11,7 @@ use Exception;
  */
 class AssertException extends Exception
 {
-    public int $assertCode;
+    public $assertCode;
 
     public function __construct(int $code) {
         // This code indicates specifically which kind of assertion have failed
