@@ -1,10 +1,10 @@
 <?php
-namespace TimberLog\Test;
+namespace TimberLog\Example;
 
 require __DIR__."/../../../vendor/autoload.php";
 use TimberLog\Target\ConsoleLogger;
 use TimberLog\Logger\LoggerInterface;
-use TimberLog\Log\{PlainLog, ReflectionLog};
+use TimberLog\Log\LogFactory;
 use ReflectionClass;
 
 
@@ -77,12 +77,12 @@ function main()
 
   // Logs
   $logs = [];
-  $logs [] = new PlainLog("This is a test");
-  $logs [] = new PlainLog("This is another test");
-  $logs [] = new PlainLog("This is whatever you wanna log");
-  $logs [] = new PlainLog("This is... hold on... enough!");
-  $logs [] = new ReflectionLog("Example of log using method details from reflection", $r_method);
-  $logs [] = new ReflectionLog("Another one, same method", $r_method);
+  $logs [] = LogFactory::createPlain("This is a test");
+  $logs [] = LogFactory::createPlain("This is another test");
+  $logs [] = LogFactory::createPlain("This is whatever you wanna log");
+  $logs [] = LogFactory::createPlain("This is... hold on... enough!");
+  $logs [] = LogFactory::createReflection("Example of log using method details from reflection", $r_method);
+  $logs [] = LogFactory::createReflection("Another one, same method", $r_method);
 
   // Testing screen logging
   $chosen = new ConsoleLogger;
