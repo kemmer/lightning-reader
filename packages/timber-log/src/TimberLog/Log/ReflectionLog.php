@@ -7,16 +7,15 @@ use ReflectionMethod;
 /**
  * ReflectionLog
  *
- * A specialized unit in showing log contexts based
- * on reflection
+ * Log output with message + method reflection details
  */
 class ReflectionLog extends Log
 {
     private $r_method;
 
-    public function __construct(string $message, ReflectionMethod $r_method)
+    public function __construct($level, string $message, ReflectionMethod $r_method)
     {
-        parent::__construct($message);
+        parent::__construct($level, $message);
 
         $this->r_method = $r_method;
     }

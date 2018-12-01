@@ -3,9 +3,9 @@
 namespace TimberLog\Log;
 
 /**
- * PlainLog
+ * SimpleLog
  *
- * Just holds a custom message
+ * Log output with a simple message
  */
 class SimpleLog extends Log
 {

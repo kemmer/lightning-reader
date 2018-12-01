@@ -7,5 +7,6 @@ namespace TimberLog\Log;
  */
 interface LogInterface
 {
+  public function level() : string;
   public function message() : string;
 }
