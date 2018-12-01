@@ -98,9 +98,9 @@ abstract class TestCase
         // Providing the output of test results for the user
         foreach($this->results as $result) {
             if($result->failed())
-                $this->logHandler->error(LogFactory::createPlain($result->output()));
+                $this->logHandler->error(LogFactory::createSimple($result->output()));
             else
-                $this->logHandler->info(LogFactory::createPlain($result->output()));
+                $this->logHandler->info(LogFactory::createSimple($result->output()));
         }
     }
 }
