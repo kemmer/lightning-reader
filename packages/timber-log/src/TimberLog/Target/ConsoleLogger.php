@@ -2,7 +2,7 @@
 
 namespace TimberLog\Target;
 
-use TimberLog\Logger\{Logger, LoggerInterface};
+use TimberLog\Logger\Logger;
 use TimberLog\Log\LogInterface;
 
 /**
