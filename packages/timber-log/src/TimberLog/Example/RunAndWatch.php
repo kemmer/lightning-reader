@@ -4,7 +4,8 @@ namespace TimberLog\Example;
 require __DIR__."/../../../vendor/autoload.php";
 use TimberLog\Target\ConsoleLogger;
 use TimberLog\Logger\LoggerInterface;
-use TimberLog\Log\LogFactory;
+use TimberLog\Factory\LogFactory;
+use TimberLog\Log\LogLevel;
 use ReflectionClass;
 
 
@@ -26,24 +27,10 @@ class RunAndWatch
     $this->logs = $l;
   }
 
-  public function test_error()
+  public function test_output()
   {
     foreach($this->logs as $log) {
-      $this->logger->error($log);
-    }
-  }
-
-  public function test_warning()
-  {
-    foreach($this->logs as $log) {
-      $this->logger->warning($log);
-    }
-  }
-
-  public function test_info()
-  {
-    foreach($this->logs as $log) {
-      $this->logger->info($log);
+      $this->logger->output($log);
     }
   }
 }
@@ -77,19 +64,17 @@ function main()
 
   // Logs
   $logs = [];
-  $logs [] = LogFactory::createSimple("This is a test");
-  $logs [] = LogFactory::createSimple("This is another test");
-  $logs [] = LogFactory::createSimple("This is whatever you wanna log");
-  $logs [] = LogFactory::createSimple("This is... hold on... enough!");
-  $logs [] = LogFactory::createReflection("Example of log using method details from reflection", $r_method);
-  $logs [] = LogFactory::createReflection("Another one, same method", $r_method);
+  $logs [] = LogFactory::createSimple(LogLevel::ERROR_STR, "This is a test");
+  $logs [] = LogFactory::createSimple(LogLevel::ERROR_STR, "This is another test");
+  $logs [] = LogFactory::createSimple(LogLevel::INFO_STR, "This is whatever you wanna log");
+  $logs [] = LogFactory::createSimple(LogLevel::INFO_STR, "This is... hold on... enough!");
+  $logs [] = LogFactory::createReflection(LogLevel::INFO_STR, "Example of log using method details from reflection", $r_method);
+  $logs [] = LogFactory::createReflection(LogLevel::WARNING_STR, "Another one, same method", $r_method);
 
   // Testing screen logging
   $chosen = new ConsoleLogger;
   $rnw = new RunAndWatch($chosen, $logs);
-  $rnw->test_error();
-  $rnw->test_warning();
-  $rnw->test_info();
+  $rnw->test_output();
 }
 
 main();
