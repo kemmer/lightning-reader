@@ -14,30 +14,30 @@ class Tokenizer
             $lookFor = [$lookFor];
 
         foreach($lookFor as $lf) {
-            if($this->compareUnit($unit, $lf))
+            if($this->compareSingle($unit, $lf))
                 return true;
         }
 
         return false;
     }
 
-    public function compareUnit($unit, $lookFor)
+    public function compareSingle($unit, $lookFor)
     {
         return ($unit === $lookFor);
     }
 
-    public function readBlock($stream)
+    public function bundle($stream, $lookFor = null, bool $alwaysStopEOL = true)
     {
         $result = "";
 
         $blockSize = strlen($stream);
         for($position = 0; $position < $blockSize; $position++) {
-            $current = $stream[$position];
+            $unit = $stream[$position];
 
-            if($current == PHP_EOL)
+            if($this->compare($unit, $lookFor) || ($alwaysStopEOL && $this->compareSingle($unit, PHP_EOL)))
                 break;
 
-            $result .= $current;
+            $result .= $unit;
         }
 
         return $result;
