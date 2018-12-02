@@ -8,14 +8,6 @@ class Tokenizer
     /**
      * unit: Smallest text unit possible (character)
      */
-    public function compareNewLine($unit)
-    {
-        if($unit === "\n")
-            return true;
-
-        return false;
-    }
-
     public function compareEOL($unit)
     {
         if($unit === PHP_EOL)

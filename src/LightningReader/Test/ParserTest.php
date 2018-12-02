@@ -38,13 +38,6 @@ class ParserTest extends TestCase
         $this->tokenizer = new Tokenizer;
     }
 
-    public function test_CanDetect_NewLine()
-    {
-        $target = "\n";
-        $result = $this->tokenizer->compareNewLine($target);
-        $this->assertTrue($result);
-    }
-
     public function test_CanDetect_PHP_EOL()
     {
         $target = PHP_EOL;
