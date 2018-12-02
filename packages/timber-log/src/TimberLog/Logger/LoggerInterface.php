@@ -9,9 +9,9 @@ use TimberLog\Log\LogInterface;
  */
 interface LoggerInterface
 {
-    public function setTimestamp(bool $answer);
-    public function setLevel(bool $answer);
-    public function setNewLine(bool $answer);
+    public function enableTimestamp(bool $answer);
+    public function enableLevel(bool $answer);
+    public function enableNewLine(bool $answer);
 
     public function output(LogInterface $log);
 }

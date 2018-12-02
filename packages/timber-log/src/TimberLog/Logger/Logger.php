@@ -20,17 +20,17 @@ abstract class Logger implements LoggerInterface
     /* Enables newline addition at the end of log message */
     private $withNewLine = false;
 
-    public function setTimestamp(bool $answer)
+    public function enableTimestamp(bool $answer)
     {
         $this->withTimestamp = $answer;
     }
 
-    public function setLevel(bool $answer)
+    public function enableLevel(bool $answer)
     {
         $this->withLevel = $answer;
     }
 
-    public function setNewLine(bool $answer)
+    public function enableNewLine(bool $answer)
     {
         $this->withNewLine = $answer;
     }
