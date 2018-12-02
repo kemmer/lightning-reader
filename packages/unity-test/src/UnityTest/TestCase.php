@@ -7,8 +7,8 @@ use ErrorException, Exception;
 
 use UnityTest\Assert\{AssertTrait, AssertException};
 use UnityTest\Result\ResultFactory;
+use UnityTest\Result\ResultLog;
 
-use TimberLog\Log\LogFactory;
 use TimberLog\Logger\LoggerInterface;
 
 // error_reporting(0);
@@ -97,12 +97,14 @@ abstract class TestCase
 
     private function outputResults()
     {
+        // Custom configurations for output
+        $this->logHandler->enableTimestamp(false);
+        $this->logHandler->enableLevel($this->verbose);
+        $this->logHandler->enableNewLine($this->verbose);
+
         // Providing the output of test results for the user
         foreach($this->results as $result) {
-            if($result->failed())
-                $this->logHandler->error(LogFactory::createSimple($result->output()));
-            else
-                $this->logHandler->info(LogFactory::createSimple($result->output()));
+            $this->logHandler->output(new ResultLog($result, $this->verbose));
         }
     }
 }
