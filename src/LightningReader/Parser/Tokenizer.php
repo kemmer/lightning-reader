@@ -7,6 +7,7 @@ class Tokenizer
 {
     /**
      * unit: Smallest text unit possible (character)
+     * block: One or more units arranged in a sequence (string)
      */
     public function compare($unit, $lookFor)
     {
@@ -26,13 +27,13 @@ class Tokenizer
         return ($unit === $lookFor);
     }
 
-    public function bundle($stream, $lookFor = null, bool $alwaysStopEOL = true)
+    public function bundle($block, $lookFor = null, bool $alwaysStopEOL = true)
     {
         $result = "";
 
-        $blockSize = strlen($stream);
+        $blockSize = strlen($block);
         for($position = 0; $position < $blockSize; $position++) {
-            $unit = $stream[$position];
+            $unit = $block[$position];
 
             if($this->compare($unit, $lookFor) || ($alwaysStopEOL && $this->compareSingle($unit, PHP_EOL)))
                 break;
