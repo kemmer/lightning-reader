@@ -7,6 +7,7 @@ require_once __DIR__."/../../../vendor/autoload.php";
 use UnityTest\TestCase;
 use TimberLog\Target\ConsoleLogger;
 use LightningReader\Parser\Tokenizer;
+use LightningReader\Parser\Comparator;
 
 
 function main()
@@ -45,28 +46,28 @@ class ParserTest extends TestCase
     public function test_Detect_Char()
     {
         $target = "f";
-        $result = $this->tokenizer->compareSingle($target, "f");
+        $result = Comparator::compareSingle($target, "f");
         $this->assertTrue($result);
     }
 
     public function test_Detect_Char_Special()
     {
         $target = "`";
-        $result = $this->tokenizer->compareSingle($target, "`");
+        $result = Comparator::compareSingle($target, "`");
         $this->assertTrue($result);
     }
 
     public function test_Detect_Space()
     {
         $target = " ";
-        $result = $this->tokenizer->compareSingle($target, " ");
+        $result = Comparator::compareSingle($target, " ");
         $this->assertTrue($result);
     }
 
     public function test_Detect_PHP_EOL()
     {
         $target = PHP_EOL;
-        $result = $this->tokenizer->compareSingle($target, PHP_EOL);
+        $result = Comparator::compareSingle($target, PHP_EOL);
         $this->assertTrue($result);
     }
 
@@ -79,7 +80,7 @@ class ParserTest extends TestCase
             "k",
             "v"
         ];
-        $result = $this->tokenizer->compare($target, $compare);
+        $result = Comparator::compare($target, $compare);
         $this->assertTrue($result);
     }
 
@@ -92,7 +93,7 @@ class ParserTest extends TestCase
             "k",
             "v"
         ];
-        $result = $this->tokenizer->compare($target, $compare);
+        $result = Comparator::compare($target, $compare);
         $this->assertFalse($result);
     }
 
