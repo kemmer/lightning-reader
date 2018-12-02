@@ -11,14 +11,12 @@ use DateTime;
  */
 abstract class Logger implements LoggerInterface
 {
-    /* Enables a timestamped output */
-    private $withTimestamp = false;
-
-    /* Enables showing the log level information */
-    private $withLevel = false;
-
-    /* Enables newline addition at the end of log message */
-    private $withNewLine = false;
+    /**
+     * Formatting flags
+     */
+    private $withTimestamp = true;  /* Enables a timestamped output */
+    private $withLevel = true;      /* Enables showing the log level information */
+    private $withNewLine = true;    /* Enables newline addition at the end of log message */
 
     public function enableTimestamp(bool $answer)
     {
