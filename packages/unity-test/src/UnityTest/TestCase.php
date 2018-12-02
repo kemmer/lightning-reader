@@ -17,8 +17,10 @@ use TimberLog\Logger\LoggerInterface;
  * Base class for testing our stuff
  * Every new class agregating lots of tests must extend
  * this class and follow these rules:
+ *
  * - Choose and create a LoggerInterface and inject in when creating
  * - Override configure() for creating objects for injection, adjust parameters, etc
+ * - Override configure() and set $verbose flag on it in case you want it
  * - Implements new methods prepended with 'test_' that are intended to be tested, with
  * protected as minimum level of visibility
  * - Calls performTesting() on the instance to start testing
