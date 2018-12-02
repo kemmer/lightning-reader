@@ -5,17 +5,28 @@ namespace LightningReader\Parser;
 
 class Tokenizer
 {
-    public function compareNewLine($char)
+    /**
+     * unit: Smallest text unit possible (character)
+     */
+    public function compareNewLine($unit)
     {
-        if($char === "\n")
+        if($unit === "\n")
             return true;
 
         return false;
     }
 
-    public function compareEOL($char)
+    public function compareEOL($unit)
     {
-        if($char === PHP_EOL)
+        if($unit === PHP_EOL)
+            return true;
+
+        return false;
+    }
+
+    public function compare($unit, $compare)
+    {
+        if($unit === $compare)
             return true;
 
         return false;

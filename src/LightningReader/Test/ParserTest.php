@@ -52,9 +52,19 @@ class ParserTest extends TestCase
         $this->assertTrue($result);
     }
 
-    // public function test_CanDetect_Char()
-    // {
-    // }
+    public function test_CanDetect_Char()
+    {
+        $target = "f";
+        $result = $this->tokenizer->compare($target, "f");
+        $this->assertTrue($result);
+    }
+
+    public function test_CanDetect_Char_Special()
+    {
+        $target = "`";
+        $result = $this->tokenizer->compare($target, "`");
+        $this->assertTrue($result);
+    }
 
     // public function test_CanDetect_Multiple()
     // {
