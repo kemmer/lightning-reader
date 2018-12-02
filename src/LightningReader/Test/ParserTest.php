@@ -19,23 +19,12 @@ function main()
 class ParserTest extends TestCase
 {
     private $tokenizer;
-    private $text1, $text11, $text111;
-    private $text2, $text22;
 
     protected function configure()
     {
         parent::configure();
 
         $this->tokenizer = new Tokenizer;
-
-        $this->text1    = "aa\\".PHP_EOL."aa^a]a bb[bb ffkdk\ndd{s";
-        $this->text1111 = "aa\\".PHP_EOL."aa^a";
-        $this->text11   = "aa\\a]a^aa bbbb ffkdk";
-        $this->text1112 = "aa\\a";
-        $this->text111  = "aa\\a]a^aa";
-        $this->text2    = "sld   l".PHP_EOL."fgz\n kdf    dffggh";
-        $this->text22   = "sld   l";
-        $this->text222  = "sld";
     }
 
     public function test_CanMakeTokenizer()
@@ -99,25 +88,25 @@ class ParserTest extends TestCase
 
     public function test_BundleUntil_EOL()
     {
-        /**
-         * The bundle should read until EOL by default
-         */
-        $result = $this->tokenizer->bundle($this->text2);
-        $this->assertEquals($result, $this->text22);
+        $text = "sld   l".PHP_EOL."fgz\n kdf    dffggh";
+        $result = $this->tokenizer->bundle($text);
+        $this->assertEquals($result, "sld   l");
     }
 
     public function test_BundleUntil_Char()
     {
         $target = "]";
-        $result = $this->tokenizer->bundle($this->text11, $target);
-        $this->assertEquals($result, $this->text1112);
+        $text = "aa\\a]a^aa bbbb ffkdk";
+        $result = $this->tokenizer->bundle($text, $target);
+        $this->assertEquals($result, "aa\\a");
     }
 
     public function test_BundleUntil_Char_NoEOLStop()
     {
         $target = "]";
-        $result = $this->tokenizer->bundle($this->text1, $target, false);
-        $this->assertEquals($result, $this->text1111);
+        $text = "aa\\".PHP_EOL."aa^a]a bb[bb ffkdk\ndd{s";
+        $result = $this->tokenizer->bundle($text, $target, false);
+        $this->assertEquals($result, "aa\\".PHP_EOL."aa^a");
     }
 
     // public function test_ReadFirstToken_BySeparator()
