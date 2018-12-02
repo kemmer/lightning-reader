@@ -10,13 +10,16 @@ namespace UnityTest\Assert;
  */
 class AssertDescription
 {
-    const TRUE = 11;
-    const EQUALS = 12;
+    const TRUE   = 11;
+    const FALSE  = 12;
+    const EQUALS = 13;
 
     public static function nameByCode(int $code) : string
     {
         if($code == self::TRUE)
             return "TRUE";
+        if($code == self::FALSE)
+            return "FALSE";
         if($code == self::EQUALS)
             return "EQUALS";
     }

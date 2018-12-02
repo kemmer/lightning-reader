@@ -12,7 +12,8 @@ use UnityTest\Assert\AssertException;
  * - Assertion methods always begin with 'assert'
  * - The returned value is 0 if result was the expected one for that test
  * - Otherwise, an AssertException is thrown
- * - Members must be protected (we don't want anybody from outside using unless they extend)
+ * - We're not interested in return values
+ * - Members must be protected (we don't want anybody from outside using unless they extend/use the trait)
  */
 trait AssertTrait
 {
@@ -20,6 +21,14 @@ trait AssertTrait
     {
         if($expression !== true)
             throw new AssertException(AssertDescription::TRUE);
+
+        return 0;
+    }
+
+    protected function assertFalse(bool $expression) : int
+    {
+        if($expression !== false)
+            throw new AssertException(AssertDescription::FALSE);
 
         return 0;
     }
