@@ -3,10 +3,12 @@
 namespace UnityTest\Result;
 
 use ReflectionMethod;
+use Exception;
 use UnityTest\Assert\AssertException;
+use UnityTest\Result\ResultInterface;
 
 
-class Result
+class Result implements ResultInterface
 {
     /* Whether the test result is success of failure */
     private $status;
@@ -17,43 +19,39 @@ class Result
     /* Exception generated, in case of failures only */
     private $exception;
 
-    public function __construct(bool $s, ReflectionMethod $rm, $e = null)
+    public function __construct(bool $status, ReflectionMethod $rm, $e = null)
     {
-        $this->status = $s;
+        $this->status = $status;
         $this->rMethod = $rm;
         $this->exception = $e;
     }
 
-    public function failed() : bool
+    public function wasSuccess() : bool
     {
-        return ! $this->status;
+        return $this->status;
     }
 
-    private function outputQuiet() : string
+    public function wasFail() : bool
     {
-        $outputContent = "";
-
-        /* This will simply output a minimal indication for a success, assert failure or error */
-        if($this->status == true)
-            $outputContent = '.';
-        elseif($this->exception instanceof AssertException)
-            $outputContent = 'F';
-        else
-            $outputContent = 'E';
-
-        return $outputContent;
+        if($this->status == false && $this->exception instanceof AssertException)
+            return true;
+        return false;
     }
 
-    private function outputVerbose() : string
+    public function wasError() : bool
     {
-        // ...
+        if($this->status == false && !($this->exception instanceof AssertException))
+            return true;
+        return false;
     }
 
-    public function output(bool $verbose = false) : string
+    public function method() : ReflectionMethod
     {
-        if(!$verbose)
-            return $this->outputQuiet();
-        else
-            return $this->outputVerbose();
+        return $this->rMethod;
+    }
+
+    public function exception() : Exception
+    {
+        return $this->exception;
     }
 }
