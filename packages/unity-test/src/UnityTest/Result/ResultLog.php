@@ -26,12 +26,25 @@ class ResultLog extends Log
 
     public function message() : string
     {
+        /**
+         * The $verbose flag will activate the verbose mode, a more expressive
+         * way of seeing tests
+         * The message in verbose mode is more expressive and wordy, and a
+         * contextual information will also be shown in case of unsuccessful tests
+         *
+         * When not in verbose mode, only a
+         */
         if($this->verbose)
             return $this->verboseMessage();
         else
             return $this->silentMessage();
     }
 
+    /**
+     * Creates a message for verbose mode
+     * The message in verbose mode is more expressive and wordy, and a
+     * contextual information will also be shown in case of unsuccessful tests
+     */
     private function verboseMessage() : string
     {
         if($this->result->wasSuccess()) {
@@ -53,6 +66,11 @@ class ResultLog extends Log
         }
     }
 
+    /**
+     * Creates a message in non-verbose mode
+     * This will only show dots in case of successful tests and
+     * other letters in case of unsuccessful tests
+     */
     private function silentMessage() : string
     {
         if($this->result->wasSuccess()) {
