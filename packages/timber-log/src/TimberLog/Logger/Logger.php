@@ -67,6 +67,6 @@ abstract class Logger implements LoggerInterface
             $format .= "\n";
         }
 
-        return vsprintf($format, $args);
+        return vsprintf(ltrim($format), $args);
     }
 }
