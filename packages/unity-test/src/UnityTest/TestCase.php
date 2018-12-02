@@ -37,7 +37,8 @@ abstract class TestCase
 
     protected function configure()
     {
-        // ...
+        // Default configs for running the tests
+        // Always call parent::configure(...) when overriding
     }
 
     final public function performTesting()

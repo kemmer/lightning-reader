@@ -14,6 +14,7 @@ class TestingExample extends TestCase
 {
     protected function configure()
     {
+        parent::configure();
     }
 
     protected function test_Example()
