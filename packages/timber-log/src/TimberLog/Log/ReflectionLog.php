@@ -12,11 +12,13 @@ use ReflectionMethod;
 class ReflectionLog extends Log
 {
     private $r_method;
+    private $message;
 
     public function __construct($level, string $message, ReflectionMethod $r_method)
     {
-        parent::__construct($level, $message);
+        parent::__construct($level);
 
+        $this->message = $message;
         $this->r_method = $r_method;
     }
 

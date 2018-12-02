@@ -9,4 +9,17 @@ namespace TimberLog\Log;
  */
 class SimpleLog extends Log
 {
+    private $message;
+
+    public function __construct($level, $message)
+    {
+        parent::__construct($level);
+
+        $this->message = $message;
+    }
+
+    public function message() : string
+    {
+        return $this->message;
+    }
 }
