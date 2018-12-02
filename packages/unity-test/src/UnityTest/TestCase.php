@@ -22,15 +22,16 @@ abstract class TestCase
     private $results;
 
     /* This flag will tell results to provide a more expressive and detailed result output */
-    private $verbose;
+    protected $verbose;
 
     /* Provides result log handling */
     private $logHandler;
 
-    public function __construct(LoggerInterface $handler)
+    public function __construct(LoggerInterface $logHandler)
     {
         $this->results = [];
-        $this->logHandler = $handler;
+        $this->verbose = false;
+        $this->logHandler = $logHandler;
 
         set_error_handler([ResultFactory::class, 'convertErrorToException']);
     }
