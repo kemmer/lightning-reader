@@ -122,6 +122,9 @@ abstract class TestCase
      */
     private function outputResults()
     {
+        if(empty($this->results))
+            return;
+
         // Custom configurations for output
         $this->logHandler->enableTimestamp(false);
         $this->logHandler->enableLevel($this->verbose);
