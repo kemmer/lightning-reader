@@ -15,7 +15,7 @@ class TestingExample extends TestCase
     protected function configure()
     {
         parent::configure();
-        $this->verbose = true;
+        $this->verbose = false;
     }
 
     protected function test_Example()

@@ -102,9 +102,31 @@ abstract class TestCase
         $this->logHandler->enableLevel($this->verbose);
         $this->logHandler->enableNewLine($this->verbose);
 
+        // This holds all results that failed, to be exibited after
+        // regular output, when NOT in verbose mode
+        $errors = [];
+
         // Providing the output of test results for the user
         foreach($this->results as $result) {
             $this->logHandler->output(new ResultLog($result, $this->verbose));
+
+            if(! $this->verbose && ! $result->wasSuccess()) {
+                $errors [] = $result;
+            }
         }
+
+        $this->logHandler->finish();
+
+        if(! $this->verbose) {
+            $this->logHandler->enableLevel(true);
+            $this->logHandler->enableNewLine(true);
+
+            foreach($errors as $result) {
+                $this->logHandler->output(new ResultLog($result, true));
+            }
+
+            $this->logHandler->finish();
+        }
+
     }
 }
