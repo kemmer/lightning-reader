@@ -65,6 +65,6 @@ class TestingExample extends TestCase
     }
 }
 
-$choosen = new ConsoleLogger;
-$te = new TestingExample($choosen);
+$logHandler = new ConsoleLogger();
+$te = new TestingExample($logHandler);
 $te->performTesting();
