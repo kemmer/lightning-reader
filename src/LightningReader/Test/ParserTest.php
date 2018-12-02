@@ -26,11 +26,13 @@ class ParserTest extends TestCase
         parent::configure();
 
         $this->tokenizer = new Tokenizer;
-        $this->text1  = "aa\\aa^aa bbbb ffkdk\ndd{]s";
-        $this->text11 = "aa\\aa^aa bbbb ffkdk";
+
+        $this->text1   = "aa\\aa^aa bbbb ffkdk\ndd{]s";
+        $this->text11  = "aa\\aa^aa bbbb ffkdk";
         $this->text111 = "aa\\aa^aa";
-        $this->text2  = "sld   l".PHP_EOL."fgz\n kdf    dffggh";
-        $this->text22 = "sld   l";
+        $this->text2   = "sld   l".PHP_EOL."fgz\n kdf    dffggh";
+        $this->text22  = "sld   l";
+        $this->text222 = "sld";
     }
 
     public function test_CanMakeTokenizer()
@@ -38,42 +40,71 @@ class ParserTest extends TestCase
         $this->tokenizer = new Tokenizer;
     }
 
-    public function test_CanDetect_PHP_EOL()
-    {
-        $target = PHP_EOL;
-        $result = $this->tokenizer->compareEOL($target);
-        $this->assertTrue($result);
-    }
-
-    public function test_CanDetect_Char()
+    public function test_Detect_Char()
     {
         $target = "f";
-        $result = $this->tokenizer->compare($target, "f");
+        $result = $this->tokenizer->compareUnit($target, "f");
         $this->assertTrue($result);
     }
 
-    public function test_CanDetect_Char_Special()
+    public function test_Detect_Char_Special()
     {
         $target = "`";
-        $result = $this->tokenizer->compare($target, "`");
+        $result = $this->tokenizer->compareUnit($target, "`");
         $this->assertTrue($result);
     }
 
-    // public function test_CanDetect_Multiple()
+    public function test_Detect_Space()
+    {
+        $target = " ";
+        $result = $this->tokenizer->compareUnit($target, " ");
+        $this->assertTrue($result);
+    }
+
+    public function test_Detect_PHP_EOL()
+    {
+        $target = PHP_EOL;
+        $result = $this->tokenizer->compareUnit($target, PHP_EOL);
+        $this->assertTrue($result);
+    }
+
+    public function test_Detect_Multiple()
+    {
+        $target = "k";
+        $compare = [
+            PHP_EOL,
+            "a",
+            "k",
+            "v"
+        ];
+        $result = $this->tokenizer->compare($target, $compare);
+        $this->assertTrue($result);
+    }
+
+    public function test_DetectFail_Multiple()
+    {
+        $target = "ç";
+        $compare = [
+            PHP_EOL,
+            "a",
+            "k",
+            "v"
+        ];
+        $result = $this->tokenizer->compare($target, $compare);
+        $this->assertFalse($result);
+    }
+
+    // public function test_ReadUntil_EOL()
     // {
+    //     $result = $this->tokenizer->readBlock($this->text2);
+    //     $this->assertEquals($result, $this->text22);
     // }
 
-    public function test_ReadUntil_Newline()
-    {
-        $result = $this->tokenizer->readBlock($this->text1);
-        $this->assertEquals($result, $this->text11);
-    }
-
-    public function test_ReadUntil_EOL()
-    {
-        $result = $this->tokenizer->readBlock($this->text2);
-        $this->assertEquals($result, $this->text22);
-    }
+    // public function test_ReadUntil_Space()
+    // {
+    //     $result = $this->tokenizer->readBlock($this->text2);
+    //     $this->assertEquals($result, $this->text222);
+    // }
 
     // public function test_ReadFirstToken_BySeparator()
     // {

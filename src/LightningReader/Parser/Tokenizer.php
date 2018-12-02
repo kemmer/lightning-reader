@@ -8,24 +8,25 @@ class Tokenizer
     /**
      * unit: Smallest text unit possible (character)
      */
-    public function compareEOL($unit)
+    public function compare($unit, $lookFor)
     {
-        if($unit === PHP_EOL)
-            return true;
+        if(!is_array($lookFor))
+            $lookFor = [$lookFor];
+
+        foreach($lookFor as $lf) {
+            if($this->compareUnit($unit, $lf))
+                return true;
+        }
 
         return false;
     }
 
-    public function compare($unit, $compare)
+    public function compareUnit($unit, $lookFor)
     {
-        if($unit === $compare)
-            return true;
-
-        return false;
+        return ($unit === $lookFor);
     }
 
-
-    public function readBlock($stream, $separator = null)
+    public function readBlock($stream)
     {
         $result = "";
 
@@ -33,7 +34,7 @@ class Tokenizer
         for($position = 0; $position < $blockSize; $position++) {
             $current = $stream[$position];
 
-            if($current == PHP_EOL || $current == $separator)
+            if($current == PHP_EOL)
                 break;
 
             $result .= $current;
