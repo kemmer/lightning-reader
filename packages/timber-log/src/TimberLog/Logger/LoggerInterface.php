@@ -14,4 +14,5 @@ interface LoggerInterface
     public function enableNewLine(bool $answer);
 
     public function output(LogInterface $log);
+    public function finish();
 }

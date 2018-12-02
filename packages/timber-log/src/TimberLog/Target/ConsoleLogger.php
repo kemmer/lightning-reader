@@ -16,4 +16,9 @@ class ConsoleLogger extends Logger
     {
         printf($this->release($log));
     }
+
+    public function finish()
+    {
+        printf("\n");
+    }
 }
