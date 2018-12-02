@@ -8,8 +8,16 @@ namespace UnityTest\Assert;
  * Just a few constants defining assertions currently defined in the system
  * Must be updated in case new assertions are created
  */
-class AssertCode
+class AssertDescription
 {
     const TRUE = 11;
     const EQUALS = 12;
+
+    public static function nameByCode(int $code) : string
+    {
+        if($code == self::TRUE)
+            return "TRUE";
+        if($code == self::EQUALS)
+            return "EQUALS";
+    }
 }

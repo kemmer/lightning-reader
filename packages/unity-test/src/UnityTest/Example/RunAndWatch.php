@@ -5,7 +5,7 @@ namespace UnityTest\Example;
 require __DIR__."/../../../vendor/autoload.php";
 use UnityTest\TestCase;
 use UnityTest\Assert\AssertException;
-use UnityTest\Assert\AssertCode;
+use UnityTest\Assert\AssertDescription;
 
 use TimberLog\Target\ConsoleLogger;
 
@@ -29,7 +29,7 @@ class TestingExample extends TestCase
     protected function test_Example3()
     {
         // Testing AssertException (1)
-        throw new AssertException(AssertCode::TRUE);
+        throw new AssertException(AssertDescription::TRUE);
     }
 
     protected function test_Example4()

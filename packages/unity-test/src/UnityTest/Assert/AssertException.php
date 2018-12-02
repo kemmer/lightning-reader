@@ -2,6 +2,7 @@
 
 namespace UnityTest\Assert;
 
+use UnityTest\Assert\AssertDescription;
 use Exception;
 
 /**
@@ -24,5 +25,10 @@ class AssertException extends Exception
     public function getAssertCode() : int
     {
         return $this->assertCode;
+    }
+
+    public function getAssertName() : string
+    {
+        return AssertDescription::nameByCode($this->assertCode);
     }
 }
