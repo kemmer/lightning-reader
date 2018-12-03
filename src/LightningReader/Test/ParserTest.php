@@ -19,12 +19,14 @@ function main()
 class ParserTest extends TestCase
 {
     private $tokenizer;
+    private $textLog_Line1;
 
     protected function configure()
     {
         parent::configure();
 
         $this->tokenizer = new Tokenizer;
+        $this->textLog_Line1 = "USER-SERVICE - - [17/Aug/2018:09:21:53 +0000] \"POST /users HTTP/1.1\" 201";
     }
 
     public function test_CanMakeTokenizer()
@@ -86,57 +88,96 @@ class ParserTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_BundleUntil_EOL()
+    public function test_SwallowUntil_EOL()
     {
-        $text = "sld   l".PHP_EOL."fgz\n kdf    dffggh";
-        $result = $this->tokenizer->bundle($text);
-        $this->assertEquals($result, "sld   l");
+        $stream = fopen("logs_short.log", "r");
+        $result = $this->tokenizer->swallow($stream);
+
+        $this->assertEquals($result, $this->textLog_Line1);
     }
 
-    public function test_BundleUntil_Char()
+    public function test_SwallowUntil_Char()
     {
+        $stream = fopen("logs_short.log", "r");
         $target = "]";
-        $text = "aa\\a]a^aa bbbb ffkdk";
-        $result = $this->tokenizer->bundle($text, $target);
-        $this->assertEquals($result, "aa\\a");
+        $result = $this->tokenizer->swallow($stream, $target);
+
+        $this->assertEquals($result, "USER-SERVICE - - [17/Aug/2018:09:21:53 +0000");
     }
 
-    public function test_BundleUntil_Char_NoEOLStop()
+    public function test_SwallowUntil_Char_NoEOLStop()
     {
-        $target = "]";
-        $text = "aa\\".PHP_EOL."aa^a]a bb[bb ffkdk\ndd{s";
-        $result = $this->tokenizer->bundle($text, $target, false);
-        $this->assertEquals($result, "aa\\".PHP_EOL."aa^a");
+        $stream = fopen("logs_short.log", "r");
+        $target = "^";
+        $result = $this->tokenizer->swallow($stream, $target, false);
+
+        $this->assertEquals($result, "USER-SERVICE - - [17/Aug/2018:09:21:53 +0000] \"POST /users HTTP/1.1\" 201
+USER-SERVICE - - [17/Aug/");
     }
 
-    // public function test_ReadFirstToken_BySeparator()
-    // {
-    //     $separator = " ";
-    //     $result = $this->tokenizer->readBlock($this->text11, $separator);
-    //     $this->assertEquals($result, $this->text111);
-    // }
+    public function test_BundleSegment_ByDelimiters_End()
+    {
+        $stream = fopen("logs_short.log", "r");
+        $delimiters = [
+            "end" => " "
+        ];
 
-    // public function test_ReadOneByOne()
-    // {
-    //     $result = $this->tokenizer->read($this->text1);
-    //     $this->assertEquals($this->text1, $result);
-    // }
+        $result = $this->tokenizer->bundle($stream, $delimiters);
+        $this->assertEquals($result, "USER-SERVICE");
+    }
 
-    // public function test_StopAt_Space()
-    // {
-    //     $result = $this->tokenizer->readUntil($this->text1);
-    //     $this->assertEquals($result, $this->text11);
-    // }
+    public function test_BundleSegment_ByDelimiters()
+    {
+        $stream = fopen("logs_short.log", "r");
+        $delimiters = [
+            "start" => "[",
+            "end" => "]"
+        ];
 
-    // public function test_StopAt_NewLine()
-    // {
-    //     $result = $this->tokenizer->readUntil($this->text2);
-    //     $this->assertEquals($result, $this->text22);
-    // }
+        $result = $this->tokenizer->bundle($stream, $delimiters);
+        $this->assertEquals($result, "17/Aug/2018:09:21:53 +0000");
+    }
 
-    // public function test_TellWhenFileEnds_File()
-    // {
-    // }
+    public function test_BundleSegment_ByDelimiters_Many()
+    {
+        $stream = fopen("logs_short.log", "r");
+
+        $delimitersArray = [
+            [
+                "end" => " ",
+                "result" => "USER-SERVICE"  // 'result' is just for testing
+            ],
+            [
+                "start" => "[",
+                "end" => "]",
+                "result" => "17/Aug/2018:09:21:53 +0000"
+            ],
+            [
+                "start" => "\"",
+                "end" => "\"",
+                "result" => "POST /users HTTP/1.1"
+            ],
+            [
+                "start" => " ",
+                "end" => PHP_EOL,
+                "result" => "201"
+            ],
+            [
+                "end" => " ",
+                "result" => "USER-SERVICE"
+            ],
+            [
+                "start" => "[",
+                "end" => "]",
+                "result" => "17/Aug/^2018:09:21:54 +0000"
+            ],
+        ];
+
+        foreach($delimitersArray as $delimiters) {
+            $result = $this->tokenizer->bundle($stream, $delimiters);
+            $this->assertEquals($result, $delimiters["result"]);
+        }
+    }
 }
 
 main();
