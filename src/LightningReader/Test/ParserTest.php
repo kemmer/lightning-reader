@@ -19,20 +19,17 @@ function main()
 
 class ParserTest extends TestCase
 {
-    private $tokenizer;
     private $textLog_Line1;
+    private $stream;
+    private $tokenizer;
 
     protected function configure()
     {
         parent::configure();
 
-        $this->tokenizer = new Tokenizer;
         $this->textLog_Line1 = "USER-SERVICE - - [17/Aug/2018:09:21:53 +0000] \"POST /users HTTP/1.1\" 201";
-    }
-
-    public function test_CanMakeTokenizer()
-    {
-        $this->tokenizer = new Tokenizer;
+        $this->stream = fopen("logs_short.log", "r");
+        $this->tokenizer = new Tokenizer($this->stream);
     }
 
     public function test_Detect_Char()
@@ -91,26 +88,26 @@ class ParserTest extends TestCase
 
     public function test_SwallowUntil_EOL()
     {
-        $stream = fopen("logs_short.log", "r");
-        $result = $this->tokenizer->swallow($stream);
+        rewind($this->stream);
+        $result = $this->tokenizer->swallow();
 
         $this->assertEquals($result, $this->textLog_Line1);
     }
 
     public function test_SwallowUntil_Char()
     {
-        $stream = fopen("logs_short.log", "r");
+        rewind($this->stream);
         $target = "]";
-        $result = $this->tokenizer->swallow($stream, $target);
+        $result = $this->tokenizer->swallow($target);
 
         $this->assertEquals($result, "USER-SERVICE - - [17/Aug/2018:09:21:53 +0000");
     }
 
     public function test_SwallowUntil_Char_NoEOLStop()
     {
-        $stream = fopen("logs_short.log", "r");
+        rewind($this->stream);
         $target = "^";
-        $result = $this->tokenizer->swallow($stream, $target, false);
+        $result = $this->tokenizer->swallow($target, false);
 
         $this->assertEquals($result, "USER-SERVICE - - [17/Aug/2018:09:21:53 +0000] \"POST /users HTTP/1.1\" 201
 USER-SERVICE - - [17/Aug/");
@@ -118,25 +115,25 @@ USER-SERVICE - - [17/Aug/");
 
     public function test_BundleSegment_ByDelimiters_End()
     {
-        $stream = fopen("logs_short.log", "r");
+        rewind($this->stream);
         $template = new Template(null, " ");
 
-        $result = $this->tokenizer->bundle($stream, $template);
+        $result = $this->tokenizer->bundle($template);
         $this->assertEquals($result, "USER-SERVICE");
     }
 
     public function test_BundleSegment_ByDelimiters()
     {
-        $stream = fopen("logs_short.log", "r");
+        rewind($this->stream);
         $template = new Template("[", "]");
 
-        $result = $this->tokenizer->bundle($stream, $template);
+        $result = $this->tokenizer->bundle($template);
         $this->assertEquals($result, "17/Aug/2018:09:21:53 +0000");
     }
 
     public function test_BundleSegment_ByDelimiters_Many()
     {
-        $stream = fopen("logs_short.log", "r");
+        rewind($this->stream);
 
         $templateArray = [];
         $templateArray [] = new Template(null, " ");
@@ -157,7 +154,7 @@ USER-SERVICE - - [17/Aug/");
         $ex = 0;
 
         foreach($templateArray as $template) {
-            $result = $this->tokenizer->bundle($stream, $template);
+            $result = $this->tokenizer->bundle($template);
             $this->assertEquals($result, $expected[$ex]);
             $ex++;
         }

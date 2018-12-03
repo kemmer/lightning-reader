@@ -2,12 +2,28 @@
 
 namespace LightningReader\Parser;
 
-
+/**
+ * Comparator
+ *
+ * Simply compare strings in a safe way
+ *
+ * unit: Smallest text unit possible (character)
+ * block: One or more units arranged in a sequence (string)
+ *
+ */
 class Comparator
 {
     /**
-     * unit: Smallest text unit possible (character)
-     * block: One or more units arranged in a sequence (string)
+     * Compare one or multiple strings
+     * If array is passed in $lookFor, we will compare multiple times
+     * and return the first positive (true) result found, or else false
+     *
+     * If you intend to use just one lookFor, it is more performant
+     * to use compareSimple() if your logic allows
+     *
+     * @param  string        $unit      The unit
+     * @param  string|array  $lookFor   What should we look for (in the unit)
+     * @return bool                     Comparison result between unit and look for
      */
     public static function compare(string $unit, $lookFor) : bool
     {
@@ -25,6 +41,13 @@ class Comparator
         return false;
     }
 
+    /**
+     * Compare
+     *
+     * @param  string $unit     The unit
+     * @param  string $lookFor  What should we look for (in the unit)
+     * @return bool             Comparison result between unit and look for
+     */
     public static function compareSingle(string $unit, string $lookFor) : bool
     {
         /**
