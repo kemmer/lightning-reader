@@ -3,6 +3,7 @@
 namespace LightningReader\Parser;
 
 use LightningReader\Parser\Comparator;
+use LightningReader\Parser\Template;
 
 
 class Tokenizer
@@ -25,15 +26,15 @@ class Tokenizer
         return $result;
     }
 
-    public function bundle(&$stream, array $delimiters) : string
+    public function bundle(&$stream, Template $template) : string
     {
         // Advance until reaches the beginning of our
         // token to be bundled
-        if(array_key_exists("start", $delimiters))
-            $this->swallow($stream, $delimiters["start"]);
+        if(!is_null($template->start))
+            $this->swallow($stream, $template->start);
 
         // Now that we reached the beginning of it
         // we will expand the search to get the rest
-        return $this->swallow($stream, $delimiters["end"]);
+        return $this->swallow($stream, $template->end);
     }
 }

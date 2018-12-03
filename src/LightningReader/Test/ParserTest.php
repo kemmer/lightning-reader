@@ -8,6 +8,7 @@ use UnityTest\TestCase;
 use TimberLog\Target\ConsoleLogger;
 use LightningReader\Parser\Tokenizer;
 use LightningReader\Parser\Comparator;
+use LightningReader\Parser\Template;
 
 
 function main()
@@ -118,23 +119,18 @@ USER-SERVICE - - [17/Aug/");
     public function test_BundleSegment_ByDelimiters_End()
     {
         $stream = fopen("logs_short.log", "r");
-        $delimiters = [
-            "end" => " "
-        ];
+        $template = new Template(null, " ");
 
-        $result = $this->tokenizer->bundle($stream, $delimiters);
+        $result = $this->tokenizer->bundle($stream, $template);
         $this->assertEquals($result, "USER-SERVICE");
     }
 
     public function test_BundleSegment_ByDelimiters()
     {
         $stream = fopen("logs_short.log", "r");
-        $delimiters = [
-            "start" => "[",
-            "end" => "]"
-        ];
+        $template = new Template("[", "]");
 
-        $result = $this->tokenizer->bundle($stream, $delimiters);
+        $result = $this->tokenizer->bundle($stream, $template);
         $this->assertEquals($result, "17/Aug/2018:09:21:53 +0000");
     }
 
@@ -142,40 +138,28 @@ USER-SERVICE - - [17/Aug/");
     {
         $stream = fopen("logs_short.log", "r");
 
-        $delimitersArray = [
-            [
-                "end" => " ",
-                "result" => "USER-SERVICE"  // 'result' is just for testing
-            ],
-            [
-                "start" => "[",
-                "end" => "]",
-                "result" => "17/Aug/2018:09:21:53 +0000"
-            ],
-            [
-                "start" => "\"",
-                "end" => "\"",
-                "result" => "POST /users HTTP/1.1"
-            ],
-            [
-                "start" => " ",
-                "end" => PHP_EOL,
-                "result" => "201"
-            ],
-            [
-                "end" => " ",
-                "result" => "USER-SERVICE"
-            ],
-            [
-                "start" => "[",
-                "end" => "]",
-                "result" => "17/Aug/^2018:09:21:54 +0000"
-            ],
-        ];
+        $templateArray = [];
+        $templateArray [] = new Template(null, " ");
+        $templateArray [] = new Template("[", "]");
+        $templateArray [] = new Template("\"", "\"");
+        $templateArray [] = new Template(" ", PHP_EOL);
+        $templateArray [] = new Template(null, " ");
+        $templateArray [] = new Template("[", "]");
 
-        foreach($delimitersArray as $delimiters) {
-            $result = $this->tokenizer->bundle($stream, $delimiters);
-            $this->assertEquals($result, $delimiters["result"]);
+        $expected = [
+            "USER-SERVICE",
+            "17/Aug/2018:09:21:53 +0000",
+            "POST /users HTTP/1.1",
+            "201",
+            "USER-SERVICE",
+            "17/Aug/^2018:09:21:54 +0000",
+        ];
+        $ex = 0;
+
+        foreach($templateArray as $template) {
+            $result = $this->tokenizer->bundle($stream, $template);
+            $this->assertEquals($result, $expected[$ex]);
+            $ex++;
         }
     }
 }
