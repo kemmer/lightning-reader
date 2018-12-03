@@ -2,10 +2,15 @@
 
 namespace LightningReader\Data;
 
-use LightningReader\Data\RegisterInterface;
+use LightningReader\Data\CompletenessInterface;
 use LightningReader\Data\RequestLogInterface;
 
-
-abstract class RequestLogAbstract implements RegisterInterface, RequestLogInterface
+/**
+ * RequestLogAbstract
+ *
+ * Contract specifying an base class
+ * for RequestLog implementation
+ */
+abstract class RequestLogAbstract implements RequestLogInterface, CompletenessInterface
 {
 }
