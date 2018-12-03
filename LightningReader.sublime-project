@@ -17,5 +17,9 @@
       "name": "Packages/UnityTest",
       "path": "packages/unity-test"
     },
-	]
+	],
+  "settings":
+  {
+    "tab_size": 4
+  }
 }
