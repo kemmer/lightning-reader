@@ -109,7 +109,7 @@ class DataTest extends TestCase
         $requestLog->setRequestDetails("POST /users HTTP/1.1");
         $requestLog->setHttpCode("201");
 
-        $this->assertfalse($requestLog->validate());
+        $this->assertFalse($requestLog->validate());
     }
 
     public function test_RequestLogValidate_Fail_Service()
@@ -120,13 +120,31 @@ class DataTest extends TestCase
         $requestLog->setRequestDetails("POST /users HTTP/1.1");
         $requestLog->setHttpCode("201");
 
-        $this->assertfalse($requestLog->validate());
+        $this->assertFalse($requestLog->validate());
     }
 
-    // public function test_RequestLogInsert()
-    // {
+    public function test_RequestLogToArray()
+    {
+        $requestLog = new RequestLog($this->validator);
+        $requestLog->setService("USERSERVICE");
+        $requestLog->setDateTime("11/Aug/2018:09:21:53 +0000");
+        $requestLog->setRequestDetails("POST /users HTTP/1.1");
+        $requestLog->setHttpCode("201");
 
-    // }
+        $this->assertTrue(is_array($requestLog->toArray()));
+    }
+
+    public function test_RequestLogSanitize()
+    {
+        $requestLog = new RequestLog($this->validator);
+        $requestLog->setService("USERSERVICE");
+        $requestLog->setDateTime("11/Aug/2018:09:21:53 +0000");
+        $requestLog->setRequestDetails("POST /users HTTP/1.1");
+        $requestLog->setHttpCode("201");
+
+        $requestLog->sanitize();
+        $this->assertEquals($requestLog->toArray()["dateTime"], "2018-08-11 09:21:53");
+    }
 }
 
 main();

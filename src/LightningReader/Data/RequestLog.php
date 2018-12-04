@@ -5,6 +5,7 @@ namespace LightningReader\Data;
 use LightningReader\Data\RequestLogAbstract;
 use LightningReader\Validator\ValidatorInterface;
 use LightningReader\Validator\Rule\{ServiceRule, NumericRule, DateTimeRule};
+use LightningReader\Data\Sanitize\DateTimeSanitize;
 
 
 class RequestLog extends RequestLogAbstract
@@ -16,10 +17,18 @@ class RequestLog extends RequestLogAbstract
 
     private $validator;
 
+    private $completed;
+    private $validated;
+    private $sanitized;
+
     public function __construct(ValidatorInterface $validator)
     {
         $this->validator = $validator;
         $this->configureValidatorRules();
+
+        $this->completed = false;
+        $this->validated = false;
+        $this->sanitized = false;
     }
 
     private function configureValidatorRules()
@@ -60,7 +69,8 @@ class RequestLog extends RequestLogAbstract
             && !empty($this->requestDetails)
             && !empty($this->httpCode)) {
 
-            return true;
+            $this->completed = true;
+            return $this->completed;
         }
 
         return false;
@@ -72,6 +82,31 @@ class RequestLog extends RequestLogAbstract
         $this->validator->setFieldData("dateTime", $this->dateTime);
         $this->validator->setFieldData("httpCode", $this->httpCode);
 
-        return $this->validator->validate();
+        $this->validated = $this->validator->validate();
+        return $this->validated;
+    }
+
+    public function sanitize() : bool
+    {
+        /* Sanitize $dateTime */
+        $sanitizer = new DateTimeSanitize;
+        $this->dateTime = $sanitizer->transform($this->dateTime);
+
+        /**
+         * The other fields are already ok since
+         * here they have been already validated
+         */
+        $this->sanitized = true;
+        return $this->sanitized;
+    }
+
+    public function toArray() : array
+    {
+        return [
+            'service'        => $this->service,
+            'dateTime'       => $this->dateTime,
+            'requestDetails' => $this->requestDetails,
+            'httpCode'       => $this->httpCode,
+        ];
     }
 }
