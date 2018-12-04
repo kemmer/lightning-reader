@@ -33,10 +33,10 @@ class ValidatorTest extends TestCase
         $this->dateTimeRule = new DateTimeRule;
     }
 
-    // public function test_CanCreateField()
-    // {
-    //     $field = new Field;
-    // }
+    public function test_CanCreateField()
+    {
+        $field = new Field;
+    }
 
     public function test_CanCreateRequestLogValidator()
     {
@@ -113,28 +113,38 @@ class ValidatorTest extends TestCase
     {
         $this->assertTrue($this->dateTimeRule->test("17/Aug/2018:09:21:53 +0000"));
     }
+
+    /* ---------------------------------- */
+
+    public function test_FieldCanSetData()
+    {
+        $field = new Field;
+        $field->setData("HUEBR");
     }
 
-    // public function test_RuleCanTestServiceIdentification()
-    // {
-    //     $rule = new ServiceRule;
-    //     $this->assertFalse($rule->test(""));
-    // }
+    public function test_FieldCanAddRule()
+    {
+        $field = new Field;
+        $field->addRule($this->dateTimeRule);
+    }
 
-    // public function test_RuleCanTestDate()
-    // {
-    //     $rule = new Rule;
-    //     $this->assertTrue($rule->check(""));
-    // }
+    public function test_FieldCanCheck_Fail()
+    {
+        $field = new Field;
+        $field->setData("HUEBR");
+        $field->addRule($this->numericRule);
 
-    // public function test_RuleCanTestInteger()
-    // {
-    //     $rule = new Rule;
-    //     $this->assertTrue($rule->check(""));
-    // }
+        $this->assertFalse($field->check());
+    }
 
+    public function test_FieldCanCheck()
+    {
+        $field = new Field;
+        $field->setData("122333");
+        $field->addRule($this->numericRule);
 
-
+        $this->assertTrue($field->check());
+    }
 }
 
 main();
