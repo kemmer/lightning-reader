@@ -17,7 +17,7 @@ CREATE TABLE `lightning_reader`.`request` (
   `id`             INT UNSIGNED   AUTO_INCREMENT,
   `file_info_id`   INT UNSIGNED   NOT NULL,
   `service`        VARCHAR(100)   NOT NULL,
-  `when`           DATETIME       NOT NULL,
+  `moment`         DATETIME       NOT NULL,
   `details`        VARCHAR(100)   NOT NULL,
   `http_code`      SMALLINT       NOT NULL,
 
