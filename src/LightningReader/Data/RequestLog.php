@@ -2,85 +2,54 @@
 
 namespace LightningReader\Data;
 
-use LightningReader\Data\RequestLogAbstract;
-use LightningReader\Validator\ValidatorInterface;
-use LightningReader\Validator\Rule\{ServiceRule, NumericRule, DateTimeRule};
+use LightningReader\Database\Information\RequestTable;
+use LightningReader\Data\Log;
 use LightningReader\Data\Sanitize\DateTimeSanitize;
+use LightningReader\Validator\Rule\{ServiceRule, NumericRule, DateTimeRule};
 
 
-class RequestLog extends RequestLogAbstract
+class RequestLog extends Log
 {
-    public $service        = "";
-    public $dateTime       = "";
-    public $requestDetails = "";
-    public $httpCode       = "";
-
-    private $validator;
-
-    private $completed;
-    private $validated;
-    private $sanitized;
-
-    public function __construct(ValidatorInterface $validator)
+    protected function configureFields()
     {
-        $this->validator = $validator;
-        $this->configureValidatorRules();
-
-        $this->completed = false;
-        $this->validated = false;
-        $this->sanitized = false;
+        $this->fields = RequestTable::dataFields();
     }
 
-    private function configureValidatorRules()
+    protected function configurePayload()
+    {
+        $this->payload = [];
+        foreach($this->fields as $field) {
+            $this->payload[$field] = null;
+        }
+    }
+
+    protected function configureValidatorRules()
     {
         $this->validator->newField("service");
-        $this->validator->newField("dateTime");
-        $this->validator->newField("httpCode");
+        $this->validator->newField("moment");
+        $this->validator->newField("http_code");
 
         $this->validator->addFieldRule("service", new ServiceRule);
-        $this->validator->addFieldRule("dateTime", new DateTimeRule);
-        $this->validator->addFieldRule("httpCode", new NumericRule);
-    }
-
-    public function setService(string $data)
-    {
-        $this->service = $data;
-    }
-
-    public function setDateTime(string $data)
-    {
-        $this->dateTime = $data;
-    }
-
-    public function setRequestDetails(string $data)
-    {
-        $this->requestDetails = $data;
-    }
-
-    public function setHttpCode(string $data)
-    {
-        $this->httpCode = $data;
+        $this->validator->addFieldRule("moment", new DateTimeRule);
+        $this->validator->addFieldRule("http_code", new NumericRule);
     }
 
     public function complete() : bool
     {
-        if(!empty($this->service)
-            && !empty($this->dateTime)
-            && !empty($this->requestDetails)
-            && !empty($this->httpCode)) {
-
-            $this->completed = true;
-            return $this->completed;
+        foreach($this->fields as $field) {
+            if(empty($this->payload[$field]))
+                return false;
         }
 
-        return false;
+        $this->completed = true;
+        return $this->completed;
     }
 
     public function validate() : bool
     {
         $this->validator->setFieldData("service", $this->service);
-        $this->validator->setFieldData("dateTime", $this->dateTime);
-        $this->validator->setFieldData("httpCode", $this->httpCode);
+        $this->validator->setFieldData("moment", $this->moment);
+        $this->validator->setFieldData("http_code", $this->http_code);
 
         $this->validated = $this->validator->validate();
         return $this->validated;
@@ -88,9 +57,9 @@ class RequestLog extends RequestLogAbstract
 
     public function sanitize() : bool
     {
-        /* Sanitize $dateTime */
+        /* Sanitize $moment */
         $sanitizer = new DateTimeSanitize;
-        $this->dateTime = $sanitizer->transform($this->dateTime);
+        $this->payload['moment'] = $sanitizer->transform($this->payload['moment']);
 
         /**
          * The other fields are already ok since
@@ -102,11 +71,6 @@ class RequestLog extends RequestLogAbstract
 
     public function toArray() : array
     {
-        return [
-            'service'        => $this->service,
-            'dateTime'       => $this->dateTime,
-            'requestDetails' => $this->requestDetails,
-            'httpCode'       => $this->httpCode,
-        ];
+        return $this->payload;
     }
 }

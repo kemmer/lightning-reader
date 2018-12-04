@@ -18,5 +18,4 @@ interface RegisterInterface
 {
     public function validate() : bool;  /* Validates all fields */
     public function sanitize() : bool;  /* Sanitizes all fields */
-    public function toArray() : array;  /* Transforms our data into an associative array */
 }
