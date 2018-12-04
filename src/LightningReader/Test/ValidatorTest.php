@@ -21,12 +21,16 @@ function main()
 class ValidatorTest extends TestCase
 {
     private $validator;
+    private $numericRule, $serviceRule, $dateTimeRule;
 
     protected function configure()
     {
         parent::configure();
 
         $this->validator = new RequestLogValidator;
+        $this->numericRule = new NumericRule;
+        $this->serviceRule = new ServiceRule;
+        $this->dateTimeRule = new DateTimeRule;
     }
 
     // public function test_CanCreateField()
@@ -62,62 +66,53 @@ class ValidatorTest extends TestCase
 
     public function test_RuleCanTestNumericOnly_Fail()
     {
-        $rule = new NumericRule;
-        $this->assertFalse($rule->test("2939s43"));
+        $this->assertFalse($this->numericRule->test("2939s43"));
     }
 
     public function test_RuleCanTestNumericOnly()
     {
-        $rule = new NumericRule;
-        $this->assertTrue($rule->test("2939043"));
+        $this->assertTrue($this->numericRule->test("2939043"));
     }
 
     public function test_RuleCanTestServiceIdentification_False()
     {
-        $rule = new ServiceRule;
-        $this->assertFalse($rule->test("USERsa~SER223VICE"));
+        $this->assertFalse($this->serviceRule->test("USERsa~SER223VICE"));
     }
 
     public function test_RuleCanTestServiceIdentification()
     {
-        $rule = new ServiceRule;
-        $this->assertTrue($rule->test("USER-SER223VICE"));
+        $this->assertTrue($this->serviceRule->test("USER-SER223VICE"));
     }
 
     public function test_RuleCanTestDateTime_Fail_Month()
     {
-        $rule = new DateTimeRule;
-        $this->assertFalse($rule->test("17/Augu/2018:09:21:53 +0000"));
+        $this->assertFalse($this->dateTimeRule->test("17/Augu/2018:09:21:53 +0000"));
     }
 
     public function test_RuleCanTestDateTime_Fail_Day()
     {
-        $rule = new DateTimeRule;
-        $this->assertFalse($rule->test("32/Augu/2018:09:21:53 +0000"));
+        $this->assertFalse($this->dateTimeRule->test("32/Augu/2018:09:21:53 +0000"));
     }
 
     public function test_RuleCanTestDateTime_Fail_TooSmall()
     {
-        $rule = new DateTimeRule;
-        $this->assertFalse($rule->test("1/Aug/2018:09:21 +0000"));
+        $this->assertFalse($this->dateTimeRule->test("1/Aug/2018:09:21 +0000"));
     }
 
     public function test_RuleCanTestDateTime_Fail_WrongTimezone()
     {
-        $rule = new DateTimeRule;
-        $this->assertFalse($rule->test("17/Aug/2018:09:21:53 +000"));
+        $this->assertFalse($this->dateTimeRule->test("17/Aug/2018:09:21:53 +000"));
     }
 
     public function test_RuleCanTestDateTime_Fail_WrongMonth()
     {
-        $rule = new DateTimeRule;
-        $this->assertFalse($rule->test("17/Dez/2018:09:21:53 +000"));
+        $this->assertFalse($this->dateTimeRule->test("17/Dez/2018:09:21:53 +000"));
     }
 
     public function test_RuleCanTestDateTime()
     {
-        $rule = new DateTimeRule;
-        $this->assertTrue($rule->test("17/Aug/2018:09:21:53 +0000"));
+        $this->assertTrue($this->dateTimeRule->test("17/Aug/2018:09:21:53 +0000"));
+    }
     }
 
     // public function test_RuleCanTestServiceIdentification()
