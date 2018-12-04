@@ -6,7 +6,7 @@ require_once __DIR__."/../../../vendor/autoload.php";
 
 use UnityTest\TestCase;
 use TimberLog\Target\ConsoleLogger;
-use LightningReader\Validator\RequestLogValidator;
+use LightningReader\Validator\Validator;
 use LightningReader\Validator\Field;
 use LightningReader\Validator\Rule\Helpers;
 use LightningReader\Validator\Rule\{NumericRule, ServiceRule, DateTimeRule};
@@ -27,7 +27,7 @@ class ValidatorTest extends TestCase
     {
         parent::configure();
 
-        $this->validator = new RequestLogValidator;
+        $this->validator = new Validator;
         $this->numericRule = new NumericRule;
         $this->serviceRule = new ServiceRule;
         $this->dateTimeRule = new DateTimeRule;
@@ -38,9 +38,9 @@ class ValidatorTest extends TestCase
         $field = new Field;
     }
 
-    public function test_CanCreateRequestLogValidator()
+    public function test_CanCreateValidator()
     {
-        $validator = new RequestLogValidator;
+        $validator = new Validator;
     }
 
     public function test_CheckByMask()
@@ -144,6 +144,44 @@ class ValidatorTest extends TestCase
         $field->addRule($this->numericRule);
 
         $this->assertTrue($field->check());
+    }
+
+    /* ---------------------------------- */
+
+    public function test_ValidatorNewField()
+    {
+        $this->validator->newField("service");
+    }
+
+    public function test_ValidatorAddFieldRule()
+    {
+        $this->validator->newField("service");
+        $this->validator->addFieldRule("service", new NumericRule);
+    }
+
+    public function test_ValidatorSetFieldData()
+    {
+        $this->validator->newField("service");
+        $this->validator->addFieldRule("service", new ServiceRule);
+        $this->validator->setFieldData("service", "USER-SERVICE");
+    }
+
+    public function test_ValidatorValidate_Fail()
+    {
+        $this->validator->newField("service");
+        $this->validator->addFieldRule("service", new ServiceRule);
+        $this->validator->setFieldData("service", "USERSERVICE");
+
+        $this->assertFalse($this->validator->validate());
+    }
+
+    public function test_ValidatorValidate()
+    {
+        $this->validator->newField("service");
+        $this->validator->addFieldRule("service", new ServiceRule);
+        $this->validator->setFieldData("service", "USER-SERVICE");
+
+        $this->assertTrue($this->validator->validate());
     }
 }
 
