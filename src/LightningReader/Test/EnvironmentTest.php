@@ -95,13 +95,13 @@ class EnvironmentTest extends TestCase
 
     public function test_CanLoad_SpecificPath()
     {
-        $context = Loader::load("/home/crke/Projects/LightningReader/.env");
+        $context = Loader::load(__DIR__."/../../../.env");
         $this->assertTrue(($context !== false));
     }
 
     public function test_CanLoad_SpecificPath_HasValues()
     {
-        $context = Loader::load("/home/crke/Projects/LightningReader/.env.example");
+        $context = Loader::load(__DIR__."/../../../.env.example");
         $this->assertEquals($context->getValue("ENV_VAR4"), "dump");
     }
 }
