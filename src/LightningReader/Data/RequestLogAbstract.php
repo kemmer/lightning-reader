@@ -11,6 +11,7 @@ use LightningReader\Data\RequestLogInterface;
  * Contract specifying an base class
  * for RequestLog implementation
  */
-abstract class RequestLogAbstract implements RequestLogInterface, CompletenessInterface
+abstract class RequestLogAbstract
+    implements RequestLogInterface, CompletenessInterface, RegisterInterface
 {
 }

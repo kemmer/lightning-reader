@@ -7,6 +7,7 @@ require_once __DIR__."/../../../vendor/autoload.php";
 use UnityTest\TestCase;
 use TimberLog\Target\ConsoleLogger;
 use LightningReader\Data\RequestLog;
+use LightningReader\Validator\Validator;
 
 
 function main()
@@ -18,18 +19,20 @@ function main()
 class DataTest extends TestCase
 {
     private $requestLog;
+    private $validator;
 
     protected function configure()
     {
         parent::configure();
 
-        $this->requestLog = new RequestLog;
+        $this->validator = new Validator;
+        $this->requestLog = new RequestLog($this->validator);
     }
 
-    // public function test_CanCreateRequestLog()
-    // {
-    //     $requestLog = new RequestLog;
-    // }
+    public function test_CanCreateRequestLog()
+    {
+        $requestLog = new RequestLog($this->validator);
+    }
 
     public function test_SetRequestLogFields()
     {
@@ -67,7 +70,7 @@ class DataTest extends TestCase
 
     public function test_RequestLogComplete()
     {
-        $requestLog = new RequestLog;
+        $requestLog = new RequestLog($this->validator);
         $requestLog->setService("USER-SERVICE");
         $requestLog->setDateTime("17/Aug/2018:09:21:53 +0000");
         $requestLog->setRequestDetails("POST /users HTTP/1.1");
@@ -77,9 +80,9 @@ class DataTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_RequestLogIncomplete()
+    public function test_RequestLogComplete_Fail()
     {
-        $requestLog = new RequestLog;
+        $requestLog = new RequestLog($this->validator);
         $requestLog->setService("USER-SERVICE");
         $requestLog->setRequestDetails("POST /users HTTP/1.1");
 
@@ -87,9 +90,43 @@ class DataTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_RequestLogValidates()
+    public function test_RequestLogValidate()
     {
+        $requestLog = new RequestLog($this->validator);
+        $requestLog->setService("USER-SERVICE");
+        $requestLog->setDateTime("17/Aug/2018:09:21:53 +0000");
+        $requestLog->setRequestDetails("POST /users HTTP/1.1");
+        $requestLog->setHttpCode("201");
+
+        $this->assertTrue($requestLog->validate());
     }
+
+    public function test_RequestLogValidate_Fail_DateTime()
+    {
+        $requestLog = new RequestLog($this->validator);
+        $requestLog->setService("USERSERVICE");
+        $requestLog->setDateTime("1c/Aug/2018:09:21:53 +0000");
+        $requestLog->setRequestDetails("POST /users HTTP/1.1");
+        $requestLog->setHttpCode("201");
+
+        $this->assertfalse($requestLog->validate());
+    }
+
+    public function test_RequestLogValidate_Fail_Service()
+    {
+        $requestLog = new RequestLog($this->validator);
+        $requestLog->setService("USERSERVICE");
+        $requestLog->setDateTime("11/Aug/2018:09:21:53 +0000");
+        $requestLog->setRequestDetails("POST /users HTTP/1.1");
+        $requestLog->setHttpCode("201");
+
+        $this->assertfalse($requestLog->validate());
+    }
+
+    // public function test_RequestLogInsert()
+    // {
+
+    // }
 }
 
 main();
