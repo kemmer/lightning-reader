@@ -2,11 +2,11 @@
 
 namespace LightningReader\Database\Information;
 
-use LightningReader\Database\Information\Table;
+use LightningReader\Database\Information\TableInterface;
 use LightningReader\Database\DatabaseInterface;
 
 
-class FileInfoTable implements Table
+class FileInfoTable implements TableInterface
 {
     public static function fields() : array
     {

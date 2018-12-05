@@ -2,10 +2,10 @@
 
 namespace LightningReader\Database\Information;
 
-use LightningReader\Database\Information\Table;
+use LightningReader\Database\Information\TableInterface;
 
 
-class RequestTable implements Table
+class RequestTable implements TableInterface
 {
     public static function fields() : array
     {
