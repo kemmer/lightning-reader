@@ -6,7 +6,7 @@ namespace RoutingMap;
 class Router
 {
     private $request;
-    private $supportedHttpMethods = ["GET"];
+    private $supportedHttpMethods = ["GET", "POST"];
     private $routeCallbacks;
 
     /**
@@ -50,6 +50,11 @@ class Router
         {
             return '/';
         }
+
+        // Removing GET URL parameters
+        $result = explode("?", $result, 2);
+        $result = $result[0];
+
         return $result;
     }
 

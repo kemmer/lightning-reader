@@ -16,9 +16,9 @@ class Request
     private function load()
     {
         // Request parameters, both GET and POST
-        $data = [];
+        $this->data = [];
         foreach($_REQUEST as $name => $value) {
-            $data[$name] = $value;
+            $this->data[$name] = $value;
         }
 
         // Setting everything into information
@@ -36,8 +36,10 @@ class Request
         return "";
     }
 
-    public function data(string $key)
+    public function data(string $key = "")
     {
+        if(empty($key))
+            return $this->data;
         if(array_key_exists($key, $this->data))
             return $this->data[$key];
         return "";
