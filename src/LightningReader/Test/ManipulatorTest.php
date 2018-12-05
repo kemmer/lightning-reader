@@ -34,7 +34,7 @@ class ManipulatorTest extends TestCase
         $this->stream = fopen("logs.log", "r");
 
         $this->context = Loader::load(__DIR__."/../../../.env.example");
-        $this->tokenizer = new Tokenizer($this->stream);
+        $this->tokenizer = new Tokenizer($this->stream, true);
         $this->connection = new MySQLDatabase($this->context);
         $this->connection->connect();
         $this->validator = new Validator;

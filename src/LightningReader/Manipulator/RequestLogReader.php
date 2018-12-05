@@ -100,6 +100,10 @@ class RequestLogReader
             // Start reading an entry from the file
             $requestLog = new RequestLog($this->validator);
 
+            // Clears the audit buffer, allowing us to get fresh data from this line
+            // (auditBuffer option must be enabled in $tokenizer for this to work)
+            $this->tokenizer->clearAuditBuffer();
+
             try {
                 // Templates are parsed in the order they are created
                 foreach($this->templates as $field => $template) {
@@ -125,11 +129,11 @@ class RequestLogReader
                 $this->requestLogs [] = $requestLog;
 
             } catch(IncompleteLineException | ValidationException | SanitizeException $e) {
-                RequestErrorTable::newError($this->connection, 1, $this->lineTracker->current(), get_class($e), "");
+                RequestErrorTable::newError($this->connection, 1, $this->lineTracker->current(), get_class($e), $this->tokenizer->getAuditBuffer());
                 $this->lineTracker->newError();
 
             } catch(Exception $e) {
-                RequestErrorTable::newError($this->connection, 1, $this->lineTracker->current(), "Unknown", "");
+                RequestErrorTable::newError($this->connection, 1, $this->lineTracker->current(), "Unknown", $this->tokenizer->getAuditBuffer());
                 $this->lineTracker->newError();
             }
 

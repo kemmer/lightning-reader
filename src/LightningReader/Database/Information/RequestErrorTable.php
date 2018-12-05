@@ -19,6 +19,12 @@ class RequestErrorTable implements Table
 
         $pdo = $connection->getPDO();
         $statement = $pdo->prepare($query);
+
+        // We don't want trim removing more that the \n char as
+        // we want to preserve originality of our content for
+        // reliable inspections
+        $content = rtrim($content, "\n");
+
         $statement->execute([$file_info_id, $line, $except, $content]);
     }
 }

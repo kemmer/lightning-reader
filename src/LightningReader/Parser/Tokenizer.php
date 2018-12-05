@@ -13,11 +13,49 @@ use LightningReader\Parser\Template;
  */
 class Tokenizer
 {
-    private $stream;    /* The resource to be observed. The input state is controlled by it */
+    private $stream;             /* The resource to be observed. The input state is controlled by it */
+    private $auditBuffer;        /* A custom buffer holding text content read. Must be handled manually when enabled */
+    private $auditBufferEnabled; /* Indicates that auditBuffer is enabled and registering properly */
 
-    public function __construct(&$stream)
+    public function __construct(&$stream, bool $enableAuditBuffer = false)
     {
         $this->stream = $stream;
+        $this->auditBuffer = "";
+        $this->auditBufferEnabled = $enableAuditBuffer;
+    }
+
+    /**
+     * Audit a $unit, storing it in our buffer
+     */
+    private function audit(string $unit)
+    {
+        if($this->auditBufferEnabled) {
+            $this->auditBuffer .= $unit;
+        }
+    }
+
+    /**
+     * Clear audit buffer, so it won't be filled with repeated data
+     * or using unecessary memory
+     *
+     * It is usually used when we finish swallowing some segment of
+     * content of our interest (e.g. a line from a file)
+     */
+    public function clearAuditBuffer()
+    {
+        $this->auditBuffer = "";
+    }
+
+    /**
+     * This will allow us to inspect the data inside audit buffer
+     * The reasons for that may vary
+     *
+     * Note that if not $auditBufferEnabled, this will always
+     * return the empty string
+     */
+    public function getAuditBuffer() : string
+    {
+        return $this->auditBuffer;
     }
 
     /**
@@ -40,6 +78,9 @@ class Tokenizer
         // could be implicitly casted to false
         while( ($unit = fgetc($this->stream)) !== false)
         {
+            // Anything read from the file will be able to be audited
+            $this->audit($unit);
+
             if(Comparator::compare($unit, $stopOn)
                 || ($alwaysStopOnEOL && Comparator::compareSingle($unit, PHP_EOL)))
                 break;
