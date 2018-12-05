@@ -9,7 +9,7 @@ This is a simple server-side API intended to consume a log file and store in a d
 - Change the $filename var in the script accordingly
 - Execute it in the command-line "php Example.php"
 - To check the results, go to the projects root, run the PHP build-in webserver and calls /matrix both (accepts GET and POST). The example filters are the ones specified in the project's email
-- Also, if you wish to inspect the database, run:
+- Also, if you wish to inspect the database, run (use a `WHERE` clause):
   - `SELECT * FROM request_errors;` to see the errors catch in the log file
   - `SELECT * FROM request;` to see everything valid from the log file
   - `SELECT * FROM file_info;` if you wish to see the files you read so far
