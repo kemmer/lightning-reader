@@ -3,6 +3,7 @@
 namespace LightningReader\Manipulator;
 
 use LightningReader\Manipulator\Exception\{SanitizeException, IncompleteLineException, ValidationException};
+use LightningReader\Manipulator\LineTracker;
 
 use LightningReader\Database\DatabaseInterface;
 use LightningReader\Database\Operation\MultipleInsert;
@@ -31,6 +32,8 @@ class RequestLogReader
     private $requestLogs;       /* RequestLog collected from input */
     private $multipleInsert;    /* Helper responsible to insert multiple lines at once */
 
+    private $lineTracker;       /* Able to keep track of file line status */
+
     public function __construct(
         $stream, DatabaseInterface $connection, ValidatorInterface $validator, Tokenizer $tokenizer)
     {
@@ -40,6 +43,7 @@ class RequestLogReader
         $this->tokenizer  = $tokenizer;
 
         $this->multipleInsert = new MultipleInsert($this->connection);
+        $this->lineTracker = new LineTracker;
     }
 
     /**
@@ -49,9 +53,9 @@ class RequestLogReader
     private function configureTemplates()
     {
         $this->templates = [];
-        $this->templates["service"] = new Template(null, " ");
-        $this->templates["moment"] = new Template("[", "]");
-        $this->templates["details"] = new Template("\"", "\"");
+        $this->templates["service"]   = new Template(null, " ");
+        $this->templates["moment"]    = new Template("[", "]");
+        $this->templates["details"]   = new Template("\"", "\"");
         $this->templates["http_code"] = new Template(" ", PHP_EOL);
     }
 
@@ -88,6 +92,11 @@ class RequestLogReader
 
         while(! feof($this->stream))
         {
+            // We are now inspecting this line. Advance the tracker over it.
+            // We don't care about success or failure to insert this line. Just
+            // need to know that this is some line in the file.
+            $this->lineTracker->advance();
+
             // Start reading an entry from the file
             $requestLog = new RequestLog($this->validator);
 
@@ -116,18 +125,24 @@ class RequestLogReader
                 $this->requestLogs [] = $requestLog;
 
             } catch(IncompleteLineException | ValidationException | SanitizeException $e) {
-                RequestErrorTable::newError($this->connection, 1, 222, get_class($e), "");
+                RequestErrorTable::newError($this->connection, 1, $this->lineTracker->current(), get_class($e), "");
+                $this->lineTracker->newError();
 
             } catch(Exception $e) {
-                RequestErrorTable::newError($this->connection, 1, 222, "Unknown", "");
+                RequestErrorTable::newError($this->connection, 1, $this->lineTracker->current(), "Unknown", "");
+                $this->lineTracker->newError();
             }
 
             // If we hit 20 entries, insert at once in database
-            if(count($this->requestLogs) == 20)
+            if(count($this->requestLogs) == 20) {
                 $this->insertLines();
+                $this->lineTracker->newSuccess(20);
+            }
         }
 
         // If we end, insert the valid lines that we have left
+        $remainingLines_Count = count($this->requestLogs);
         $this->insertLines();
+        $this->lineTracker->newSuccess($remainingLines_Count);
     }
 }
