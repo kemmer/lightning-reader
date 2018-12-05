@@ -21,6 +21,7 @@ function main()
 
 class ManipulatorTest extends TestCase
 {
+    private $filename;
     private $stream;
     private $context;
     private $tokenizer;
@@ -31,7 +32,8 @@ class ManipulatorTest extends TestCase
     {
         parent::configure();
 
-        $this->stream = fopen("logs.log", "r");
+        $this->filename = "logs.log";
+        $this->stream = fopen($this->filename, "r");
 
         $this->context = Loader::load(__DIR__."/../../../.env.example");
         $this->tokenizer = new Tokenizer($this->stream, true);
@@ -42,12 +44,12 @@ class ManipulatorTest extends TestCase
 
     public function test_CanCreateRequestLogReader()
     {
-        $reader = new RequestLogReader($this->stream, $this->connection, $this->validator, $this->tokenizer);
+        $reader = new RequestLogReader($this->filename, $this->stream, $this->connection, $this->validator, $this->tokenizer);
     }
 
     public function test_ReadFile()
     {
-        $reader = new RequestLogReader($this->stream, $this->connection, $this->validator, $this->tokenizer);
+        $reader = new RequestLogReader($this->filename, $this->stream, $this->connection, $this->validator, $this->tokenizer);
         $reader->start();
     }
 }

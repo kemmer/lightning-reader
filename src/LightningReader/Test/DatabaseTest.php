@@ -8,6 +8,7 @@ use UnityTest\TestCase;
 use TimberLog\Target\ConsoleLogger;
 use LightningReader\Database\MySQLDatabase;
 use LightningReader\Database\Operation\MultipleInsert;
+use LightningReader\Database\Information\FileInfoTable;
 use LightningReader\Environment\Loader;
 
 
@@ -48,6 +49,11 @@ class DatabaseTest extends TestCase
         $columns = ['name', 'last_line', 'lines_read', 'lines_failed'];
         $lines = [['myfile.txt', '1', '0', '0'], ['myfile2.txt', '1', '0', '0']];
         $multipleInsert->insert("file_info", $columns, $lines);
+    }
+
+    public function test_FetchFileInfo()
+    {
+        FileInfoTable::openOrRecover($this->connection, "logssdsddfsf.log");
     }
 }
 

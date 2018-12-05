@@ -7,7 +7,7 @@ use LightningReader\Manipulator\LineTracker;
 
 use LightningReader\Database\DatabaseInterface;
 use LightningReader\Database\Operation\MultipleInsert;
-use LightningReader\Database\Information\{RequestTable, RequestErrorTable};
+use LightningReader\Database\Information\{RequestTable, RequestErrorTable, FileInfoTable};
 
 use LightningReader\Validator\ValidatorInterface;
 use LightningReader\Parser\{Tokenizer, Template};
@@ -23,6 +23,8 @@ use Exception;
  */
 class RequestLogReader
 {
+    private $filename;          /* The name of the file currently being read */
+    private $fileInfoID;        /* The ID of the file in file_info table */
     private $stream;            /* The input stream to be observed */
     private $connection;        /* Database connection to where we will insert the lines */
     private $validator;         /* For validating the input */
@@ -35,8 +37,9 @@ class RequestLogReader
     private $lineTracker;       /* Able to keep track of file line status */
 
     public function __construct(
-        $stream, DatabaseInterface $connection, ValidatorInterface $validator, Tokenizer $tokenizer)
+        $filename, $stream, DatabaseInterface $connection, ValidatorInterface $validator, Tokenizer $tokenizer)
     {
+        $this->filename   = $filename;
         $this->stream     = $stream;
         $this->connection = $connection;
         $this->validator  = $validator;
@@ -44,6 +47,19 @@ class RequestLogReader
 
         $this->multipleInsert = new MultipleInsert($this->connection);
         $this->lineTracker = new LineTracker;
+
+        $this->templates = [];
+        $this->fileInfoID = null;
+    }
+
+    /**
+     * Looks for a filename match in database and returns
+     * the created or new ID
+     */
+    private function configureFile()
+    {
+        // Obtains the file_info_id for the opened file
+        $this->fileInfoID = FileInfoTable::openOrRecover($this->connection, $this->filename);
     }
 
     /**
@@ -72,7 +88,7 @@ class RequestLogReader
         $fieldData_Array = [];
         foreach($this->requestLogs as $requestLog) {
             $data = $requestLog->toArray();
-            array_unshift($data, '1');  // Addind the file_info_id
+            array_unshift($data, $this->fileInfoID);  // Adding the file_info_id
             $fieldData_Array [] = $data;
         }
 
@@ -89,6 +105,7 @@ class RequestLogReader
     public function start()
     {
         $this->configureTemplates();
+        $this->configureFile();
 
         while(! feof($this->stream))
         {
@@ -129,11 +146,11 @@ class RequestLogReader
                 $this->requestLogs [] = $requestLog;
 
             } catch(IncompleteLineException | ValidationException | SanitizeException $e) {
-                RequestErrorTable::newError($this->connection, 1, $this->lineTracker->current(), get_class($e), $this->tokenizer->getAuditBuffer());
+                RequestErrorTable::newError($this->connection, $this->fileInfoID, $this->lineTracker->current(), get_class($e), $this->tokenizer->getAuditBuffer());
                 $this->lineTracker->newError();
 
             } catch(Exception $e) {
-                RequestErrorTable::newError($this->connection, 1, $this->lineTracker->current(), "Unknown", $this->tokenizer->getAuditBuffer());
+                RequestErrorTable::newError($this->connection, $this->fileInfoID, $this->lineTracker->current(), "Unknown", $this->tokenizer->getAuditBuffer());
                 $this->lineTracker->newError();
             }
 
