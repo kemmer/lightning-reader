@@ -64,4 +64,9 @@ class MySQLDatabase implements DatabaseInterface
     {
         return $this->insert($query, $params);
     }
+
+    public function getPDO()
+    {
+        return $this->pdo;
+    }
 }
