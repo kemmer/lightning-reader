@@ -1,0 +1,20 @@
+{
+    "name": "kemmer/routing-map",
+    "description": "A very tiny routing system",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Cristiano Kemmer",
+            "email": "criskemmer@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "RoutingMap\\": "src/RoutingMap"
+        }
+    }
+}

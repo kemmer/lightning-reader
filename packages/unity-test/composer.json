@@ -1,0 +1,27 @@
+{
+    "name": "kemmer/unity-test",
+    "description": "Basic library to perform Unit Test",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Cristiano Kemmer",
+            "email": "criskemmer@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../packages/timber-log"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "kemmer/timber-log": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "UnityTest\\": "src/UnityTest"
+        }
+    }
+}

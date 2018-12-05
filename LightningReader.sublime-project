@@ -1,0 +1,29 @@
+{
+	"folders":
+	[
+		{
+      "name": "root",
+			"path": "."
+		},
+    {
+      "name": "Source",
+      "path": "src"
+    },
+    {
+      "name": "Packages/TimberLog",
+      "path": "packages/timber-log"
+    },
+    {
+      "name": "Packages/UnityTest",
+      "path": "packages/unity-test"
+    },
+    {
+      "name": "Packages/RoutingMap",
+      "path": "packages/routing-map"
+    },
+	],
+  "settings":
+  {
+    "tab_size": 4
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "name": "kemmer/timber-log",
+    "description": "A simple logging system able to deal with multiple targets.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Cristiano Kemmer",
+            "email": "criskemmer@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "TimberLog\\": "src/TimberLog"
+        }
+    }
+}
