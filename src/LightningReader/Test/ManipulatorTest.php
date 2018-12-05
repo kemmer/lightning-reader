@@ -31,7 +31,7 @@ class ManipulatorTest extends TestCase
     {
         parent::configure();
 
-        $this->stream = fopen("logs_short.log", "r");
+        $this->stream = fopen("logs.log", "r");
 
         $this->context = Loader::load(__DIR__."/../../../.env.example");
         $this->tokenizer = new Tokenizer($this->stream);
