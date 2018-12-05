@@ -17,6 +17,10 @@
       "name": "Packages/UnityTest",
       "path": "packages/unity-test"
     },
+    {
+      "name": "Packages/RoutingMap",
+      "path": "packages/routing-map"
+    },
 	],
   "settings":
   {

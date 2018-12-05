@@ -17,12 +17,17 @@
         {
             "type": "path",
             "url": "packages/unity-test"
+        },
+        {
+            "type": "path",
+            "url": "packages/routing-map"
         }
     ],
     "require": {
         "php": "^7.1",
         "kemmer/timber-log": "*",
-        "kemmer/unity-test": "*"
+        "kemmer/unity-test": "*",
+        "kemmer/routing-map": "*"
     },
     "autoload": {
         "psr-4": {
