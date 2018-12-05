@@ -28,6 +28,8 @@ CREATE TABLE `lightning_reader`.`request` (
 CREATE TABLE `lightning_reader`.`request_errors` (
   `id`             INT UNSIGNED   AUTO_INCREMENT,
   `file_info_id`   INT UNSIGNED   NOT NULL,
+  `line`           INT UNSIGNED   NOT NULL,
+  `except`         VARCHAR(200)   NOT NULL,
   `content`        TEXT           NOT NULL,
 
   PRIMARY KEY (`id`),
