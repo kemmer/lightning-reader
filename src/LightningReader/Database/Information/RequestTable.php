@@ -7,7 +7,7 @@ use LightningReader\Database\Information\Table;
 
 class RequestTable implements Table
 {
-    public static function fields()
+    public static function fields() : array
     {
         $fields = self::dataFields();
         array_unshift($fields, "file_info_id");
