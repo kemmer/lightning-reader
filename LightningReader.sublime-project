@@ -6,8 +6,8 @@
 			"path": "."
 		},
     {
-      "name": "Source",
-      "path": "src"
+      "name": "LightningReader",
+      "path": "src/LightningReader"
     },
     {
       "name": "Packages/TimberLog",
