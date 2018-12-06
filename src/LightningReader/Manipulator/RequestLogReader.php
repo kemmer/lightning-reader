@@ -13,6 +13,9 @@ use LightningReader\Validator\ValidatorInterface;
 use LightningReader\Parser\{Tokenizer, Template};
 use LightningReader\Data\RequestLog;
 
+use TimberLog\Logger\LoggerInterface;
+use TimberLog\Log\{SimpleLog, LogLevel};
+
 use Exception;
 
 
@@ -28,18 +31,22 @@ class RequestLogReader
     private $connection;        /* Database connection to where we will insert the lines */
     private $validator;         /* For validating the input */
     private $tokenizer;         /* Bundle the input accordingly into desired tokens */
+    private $logger;            /* Log important results to the user */
 
     private $templates;         /* Templates rules for parsing the input */
     private $requestLogs;       /* RequestLog collected from input */
     private $multipleInsert;    /* Helper responsible to insert multiple lines at once */
 
     public function __construct(
-        FileInfoInterface $file, DatabaseInterface $connection, ValidatorInterface $validator, Tokenizer $tokenizer)
+        FileInfoInterface $file, DatabaseInterface $connection,
+        ValidatorInterface $validator, Tokenizer $tokenizer,
+        LoggerInterface $logger)
     {
         $this->file       = $file;
         $this->connection = $connection;
         $this->validator  = $validator;
         $this->tokenizer  = $tokenizer;
+        $this->logger     = $logger;
 
         $this->multipleInsert = new MultipleInsert($this->connection);
 
@@ -96,10 +103,7 @@ class RequestLogReader
         $this->requestLogs = [];
     }
 
-    /**
-     * Starts reading the file.
-     */
-    public function start()
+    private function startFileReading()
     {
         $this->configureTemplates();
         $this->configureFile();
@@ -172,5 +176,26 @@ class RequestLogReader
         $remainingLines_Count = count($this->requestLogs);
         $this->insertLines();
         $this->file->lineTracker()->newSuccess($remainingLines_Count);
+    }
+
+    /**
+     * Starts reading the file.
+     */
+    public function start()
+    {
+        $start = microtime(true);
+        $this->startFileReading();
+
+        // Obtaining information about our reading
+        $elapsed = microtime(true) - $start;
+        $summary = $this->file->lineTracker()->summary();
+        $memory = memory_get_peak_usage() / 1024 / 1024;
+
+        $this->logger->output(new SimpleLog(LogLevel::INFO_STR,
+            "File completely inserted. Elapsed time (seconds): ".$elapsed
+            .". Successful lines: ".$summary["success"]
+            .". Error lines: ".$summary["error"]
+            .". Memory usage (MB): ".$memory
+        ));
     }
 }

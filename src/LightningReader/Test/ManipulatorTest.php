@@ -27,12 +27,13 @@ class ManipulatorTest extends TestCase
     private $connection;
     private $validator;
     private $fileInfo;
+    private $logger;
 
     protected function configure()
     {
         parent::configure();
 
-        $this->filePath = "logs.log";
+        $this->filePath = "logs_large.log";
         $this->fileInfo = new FileInfo($this->filePath);
 
         $this->context = Loader::load(__DIR__."/../../../.env.example");
@@ -40,16 +41,17 @@ class ManipulatorTest extends TestCase
         $this->connection = new MySQLDatabase($this->context);
         $this->connection->connect();
         $this->validator = new Validator;
+        $this->logger = new ConsoleLogger;
     }
 
     public function test_CanCreateRequestLogReader()
     {
-        $reader = new RequestLogReader($this->fileInfo, $this->connection, $this->validator, $this->tokenizer);
+        $reader = new RequestLogReader($this->fileInfo, $this->connection, $this->validator, $this->tokenizer, $this->logger);
     }
 
     public function test_ReadFile()
     {
-        $reader = new RequestLogReader($this->fileInfo, $this->connection, $this->validator, $this->tokenizer);
+        $reader = new RequestLogReader($this->fileInfo, $this->connection, $this->validator, $this->tokenizer, $this->logger);
         $reader->start();
     }
 
