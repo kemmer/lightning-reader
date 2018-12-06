@@ -45,6 +45,8 @@ class RequestLogReader
 
         $this->templates = [];
         $this->fileInfoID = null;
+
+        $this->requestLogs = [];
     }
 
     /**
