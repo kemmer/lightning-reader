@@ -33,4 +33,13 @@ class LineTracker
     {
         $this->lineError_Count++;
     }
+
+    public function summary()
+    {
+        return [
+            'current' => $this->lineCurrent,
+            'success' => $this->lineSuccess_Count,
+            'error'   => $this->lineError_Count,
+        ];
+    }
 }

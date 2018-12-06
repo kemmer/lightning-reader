@@ -4,6 +4,7 @@ namespace LightningReader\Parser;
 
 use LightningReader\Parser\Comparator;
 use LightningReader\Parser\Template;
+use LightningReader\Manipulator\FileInfoInterface;
 
 /**
  * Tokenizer
@@ -13,13 +14,13 @@ use LightningReader\Parser\Template;
  */
 class Tokenizer
 {
-    private $stream;             /* The resource to be observed. The input state is controlled by it */
+    private $file;               /* The holds the resource to be observed. The input state is controlled by it */
     private $auditBuffer;        /* A custom buffer holding text content read. Must be handled manually when enabled */
     private $auditBufferEnabled; /* Indicates that auditBuffer is enabled and registering properly */
 
-    public function __construct(&$stream, bool $enableAuditBuffer = false)
+    public function __construct(FileInfoInterface $file, bool $enableAuditBuffer = false)
     {
-        $this->stream = $stream;
+        $this->file = $file;
         $this->auditBuffer = "";
         $this->auditBufferEnabled = $enableAuditBuffer;
     }
@@ -76,7 +77,7 @@ class Tokenizer
 
         // Use strict comparison for fgetc() as some input (like '0')
         // could be implicitly casted to false
-        while( ($unit = fgetc($this->stream)) !== false)
+        while( ($unit = fgetc($this->file->stream())) !== false)
         {
             // Anything read from the file will be able to be audited
             $this->audit($unit);

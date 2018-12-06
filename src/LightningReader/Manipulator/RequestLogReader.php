@@ -3,7 +3,7 @@
 namespace LightningReader\Manipulator;
 
 use LightningReader\Manipulator\Exception\{SanitizeException, IncompleteLineException, ValidationException};
-use LightningReader\Manipulator\LineTracker;
+use LightningReader\Manipulator\FileInfoInterface;
 
 use LightningReader\Database\DatabaseInterface;
 use LightningReader\Database\Operation\MultipleInsert;
@@ -23,9 +23,8 @@ use Exception;
  */
 class RequestLogReader
 {
-    private $filename;          /* The name of the file currently being read */
+    private $file;              /* Information about the file */
     private $fileInfoID;        /* The ID of the file in file_info table */
-    private $stream;            /* The input stream to be observed */
     private $connection;        /* Database connection to where we will insert the lines */
     private $validator;         /* For validating the input */
     private $tokenizer;         /* Bundle the input accordingly into desired tokens */
@@ -34,19 +33,15 @@ class RequestLogReader
     private $requestLogs;       /* RequestLog collected from input */
     private $multipleInsert;    /* Helper responsible to insert multiple lines at once */
 
-    private $lineTracker;       /* Able to keep track of file line status */
-
     public function __construct(
-        $filename, $stream, DatabaseInterface $connection, ValidatorInterface $validator, Tokenizer $tokenizer)
+        FileInfoInterface $file, DatabaseInterface $connection, ValidatorInterface $validator, Tokenizer $tokenizer)
     {
-        $this->filename   = $filename;
-        $this->stream     = $stream;
+        $this->file       = $file;
         $this->connection = $connection;
         $this->validator  = $validator;
         $this->tokenizer  = $tokenizer;
 
         $this->multipleInsert = new MultipleInsert($this->connection);
-        $this->lineTracker = new LineTracker;
 
         $this->templates = [];
         $this->fileInfoID = null;
@@ -59,7 +54,7 @@ class RequestLogReader
     private function configureFile()
     {
         // Obtains the file_info_id for the opened file
-        $this->fileInfoID = FileInfoTable::openOrRecover($this->connection, $this->filename);
+        $this->fileInfoID = FileInfoTable::openOrRecover($this->connection, $this->file->filePath());
     }
 
     /**
@@ -107,12 +102,12 @@ class RequestLogReader
         $this->configureTemplates();
         $this->configureFile();
 
-        while(! feof($this->stream))
+        while(! feof($this->file->stream()))
         {
             // We are now inspecting this line. Advance the tracker over it.
             // We don't care about success or failure to insert this line. Just
             // need to know that this is some line in the file.
-            $this->lineTracker->advance();
+            $this->file->lineTracker()->advance();
 
             // Start reading an entry from the file
             $requestLog = new RequestLog($this->validator);
@@ -146,24 +141,34 @@ class RequestLogReader
                 $this->requestLogs [] = $requestLog;
 
             } catch(IncompleteLineException | ValidationException | SanitizeException $e) {
-                RequestErrorTable::newError($this->connection, $this->fileInfoID, $this->lineTracker->current(), get_class($e), $this->tokenizer->getAuditBuffer());
-                $this->lineTracker->newError();
+                RequestErrorTable::newError(
+                    $this->connection,
+                    $this->fileInfoID,
+                    $this->file->lineTracker()->current(),
+                    get_class($e),
+                    $this->tokenizer->getAuditBuffer());
+                $this->file->lineTracker()->newError();
 
             } catch(Exception $e) {
-                RequestErrorTable::newError($this->connection, $this->fileInfoID, $this->lineTracker->current(), "Unknown", $this->tokenizer->getAuditBuffer());
-                $this->lineTracker->newError();
+                RequestErrorTable::newError(
+                    $this->connection,
+                    $this->fileInfoID,
+                    $this->file->lineTracker()->current(),
+                    $e->getMessage(),
+                    $this->tokenizer->getAuditBuffer());
+                $this->file->lineTracker()->newError();
             }
 
             // If we hit 20 entries, insert at once in database
             if(count($this->requestLogs) == 20) {
                 $this->insertLines();
-                $this->lineTracker->newSuccess(20);
+                $this->file->lineTracker()->newSuccess(20);
             }
         }
 
         // If we end, insert the valid lines that we have left
         $remainingLines_Count = count($this->requestLogs);
         $this->insertLines();
-        $this->lineTracker->newSuccess($remainingLines_Count);
+        $this->file->lineTracker()->newSuccess($remainingLines_Count);
     }
 }
