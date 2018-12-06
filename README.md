@@ -22,6 +22,7 @@ This is a simple server-side API intended to consume a log file and store in a d
 - The logs are being inserted by 20 at once in the database. Grouping queries may significantly improve performance, so this number may be fine-tuned if requested.
 - The read is not using buffers, bringing more data to the memory where it is faster so that can be improved, but it will consume more memory depending on its size. I do not know if the current implementation is performant enought for the specification, so it may be improved with buffering if requested.
 - Current implementation has very low memory consumption, but may use more from the CPU and disk
+- I am not checking for SQL injections or validating the filters, so it will be used directly on the query (endpoint /matrix)
 
 # Project structure
 
@@ -31,14 +32,9 @@ This project was built entirely from scratch. I only used PHP 7.1 and Composer. 
 It is not meant to be production-ready or used by people that are unaware of the project's specification.
 
 ## Folder Structure
-### `database/`
-Holds all data related to database creation with SQL
-
-### `packages/`
-Every packaged bundled with composer external from project's namespace will be here. Folders here inside are being add to the project repository manually in the `composer.json`
-
-### `src/`
-Main project folder
+- `database/`: Holds all data related to database creation with SQL
+- `packages/`: Every packaged bundled with composer external from project's namespace will be here. Folders here inside are being add to the project repository manually in the `composer.json`
+- `src/`: Main project folder
 
 ## Packages
 ### TimberLog
