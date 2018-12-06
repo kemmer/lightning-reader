@@ -8,24 +8,27 @@ use LightningReader\Parser\Tokenizer;
 use LightningReader\Database\MySQLDatabase;
 use LightningReader\Validator\Validator;
 use LightningReader\Environment\Loader;
-use LightningReader\Manipulator\RequestLogReader;
+use LightningReader\Manipulator\{FileInfo, RequestLogReader};
+
+use TimberLog\Target\ConsoleLogger;
 
 
 function run()
 {
     // Loading dependencies
-    $filename = "logs.log";
-    $stream = fopen($filename, "r");
+    $filePath = "logs.log";
+    $file = new FileInfo($filePath);
 
     $context = Loader::load(__DIR__."/../../../.env");
-    $tokenizer = new Tokenizer($stream, true);
+    $tokenizer = new Tokenizer($file, true);
     $connection = new MySQLDatabase($context);
     $connection->connect();
     $validator = new Validator;
+    $logger = new ConsoleLogger;
 
     // Creating main class for file reading and starting it
     $reader = new RequestLogReader(
-        $filename, $stream, $connection, $validator, $tokenizer);
+        $file, $connection, $validator, $tokenizer, $logger);
     $reader->start();
 }
 

@@ -20,7 +20,8 @@ This is a simple server-side API intended to consume a log file and store in a d
 - I assumed empty lines anywhere in the log file are invalid, so that is being reported
 - I assumed the time is in UTC for all log lines as the example did not show something different
 - The logs are being inserted by 20 at once in the database. Grouping queries may significantly improve performance, so this number may be fine-tuned if requested.
-- The read is not using buffers, bringing more data to the memory where it is faster so that can be improved, but it will consume more memory depending on its size. I do not know if this implementation is performant enought for the specification, so it may be improved if requested.
+- The read is not using buffers, bringing more data to the memory where it is faster so that can be improved, but it will consume more memory depending on its size. I do not know if the current implementation is performant enought for the specification, so it may be improved with buffering if requested.
+- Current implementation has very low memory consumption, but may use more from the CPU and disk
 
 # Project structure
 
@@ -39,4 +40,24 @@ Every packaged bundled with composer external from project's namespace will be h
 ### `src/`
 Main project folder
 
-## Core namespaces
+## Packages
+### TimberLog
+Used for logging the output. Currently only logging to the screen (console), but can be extended to other sources like a file, IDE, etc.
+
+### UnityTest
+Library used to perform unit tests. One needs to extend `UnityTest\TestCase` to use it as a class for holding testing methods and implement tests with `test_` prefix. Assertions are available using something like `$this->assertEquals`.
+
+### RequestMap
+A simple library for building a route system, allowing to execute specific callbacks based on URI.
+
+## Main Project
+Besides the initial explanation, getting into the details the project has the following namespaces:
+
+- `Data`: Classes that hold the data after it was inserted and interacts with Validator and other modules
+- `Parser`: Resposible for parsing the `resource` stream and doing text analysis over it, resulting in data of interest (fields of the lines)
+- `Manipulator`: Does the reading of the logfile
+- `Validator`: Validator class holds many Fields, each Field can have a set of Rules, define in `Validator\Rule` namespace
+- `Database`: Database manipulatin using PDO. `Information` subnamespace implements static per-table information manipulation. `Operation` holds all custom operation over DB used in project.
+- `Environment`: Queries the info from a `.env` file and loads into a Context object.
+- `Test`: Holds all the tests (extended from TestCase)
+- `Example`: Some examples for running the program
