@@ -59,10 +59,14 @@ class ResultLog extends Log
                 $this->result->method()->getEndLine());
 
             if($this->result->wasFail())
-                return "FAILED ASSERTION [".$this->result->exception()->getAssertName()."] ".$contextInformation;
+                return "FAILED ASSERTION [".$this->result->exception()->getAssertName()."][".$this->result->exception()->getLine()."] ".$contextInformation;
 
-            elseif($this->result->wasError())
-                return "ERROR [".$this->result->exception()->getMessage()."] ".$contextInformation;
+            elseif($this->result->wasError()) {
+                $message = $this->result->exception()->getMessage();
+                $line = $this->result->exception()->getLine();
+                $fileName = $this->result->exception()->getFile();
+                return "ERROR [".$message."][".$line."][".$fileName."] ".$contextInformation;
+            }
         }
     }
 
